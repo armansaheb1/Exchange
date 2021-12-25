@@ -245,6 +245,21 @@ class bankcards(APIView):
         req.delete()
         return Response(status=status.HTTP_201_CREATED)
 
+class cards(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
+    permission_classes = [IsAuthenticated]
+
+    def get(self , request , format=None):
+        if len(Staff.objects.filter(user = request.user))<1:
+            return Response(status= status.HTTP_400_BAD_REQUEST)
+        else:
+            if Staff.objects.get(user = request.user).level < 1 :
+                return Response(status= status.HTTP_400_BAD_REQUEST)
+        bankcards = VerifyBankRequest.objects.filter(user = request.data['user'])
+        serializer = VerifyBankRequestSerializer(bankcards , many=True)
+        return Response(serializer.data)
+
+
 class cp_wallet(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
     permission_classes = [IsAuthenticated]

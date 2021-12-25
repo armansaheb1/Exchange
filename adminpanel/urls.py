@@ -34,6 +34,7 @@ urlpatterns = [
    path('ticket' , views.ticket.as_view() , name='ticket'),
    path('ticket/<int:id>' , views.ticket.as_view() , name='ticket'),
    path('bankcards' , views.bankcards.as_view() , name='bankcards'),
+   path('cards' , views.cards.as_view() , name='cards'),
    path('bankaccounts' , views.bankaccounts.as_view() , name='bankaccounts'),
    path('verifymelli' , views.verifymelli.as_view() , name='verifymelli'),
    path('verifyaccept' , views.verifyaccept.as_view() , name='verifyaccept'),
