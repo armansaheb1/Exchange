@@ -2154,6 +2154,13 @@ class cp_borrowlist(APIView):
 
 class cp_ticker(APIView):
     def post(self , request, format=None):
+        r2 = requests.get(url = 'https://api.coinex.com/v1/common/currency/rate')
+        r2 = float(r2.json()['data']['USDT_to_USD']) * General.objects.get(id =1).USDTpercent2 / 100
+        list = {} 
+        r = requests.get(url = 'https://api.coinex.com/v1/market/ticker/all')
+        list = r.json()['data']['ticker']
+        list[request.data['sym']]['last'] = float(list[request.data['sym']]['last']) / r2 
+        return Response(list[request.data['sym']])
         if request.data['sym'] == 'USDT':
             r = requests.get(url = 'https://api.coinex.com/v1/common/currency/rate')
             r = r.json()['data']['USDT_to_USD']
