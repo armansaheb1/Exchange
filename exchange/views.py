@@ -2159,8 +2159,8 @@ class cp_ticker(APIView):
         list = {} 
         r = requests.get(url = 'https://api.coinex.com/v1/market/ticker/all')
         list = r.json()['data']['ticker']
-        list[request.data['sym']]['last'] = float(list[request.data['sym']]['last']) / r2 
-        return Response(list[request.data['sym']])
+        list[request.data['sym']+'USDT']['last'] = float(list[request.data['sym']+'USDT']['last']) / r2 
+        return Response(list[request.data['sym']+'USDT'])
         if request.data['sym'] == 'USDT':
             r = requests.get(url = 'https://api.coinex.com/v1/common/currency/rate')
             r = r.json()['data']['USDT_to_USD']
