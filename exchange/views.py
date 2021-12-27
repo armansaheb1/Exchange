@@ -2154,6 +2154,11 @@ class cp_borrowlist(APIView):
 
 class cp_ticker(APIView):
     def post(self , request, format=None):
+        if request.data['sym'] == 'USDT':
+            r = requests.get(url = 'https://api.coinex.com/v1/common/currency/rate')
+            r = r.json()['data']['USDT_to_USD']
+            print(r)
+            return Response({'ticker':{'buy' : float(r) * General.objects.get(id =1).USDTpercent2 / 100, 'last' : float(r) * General.objects.get(id =1).USDTpercent2 / 100}})
         r2 = requests.get(url = 'https://api.coinex.com/v1/common/currency/rate')
         r2 = float(r2.json()['data']['USDT_to_USD']) * General.objects.get(id =1).USDTpercent2 / 100
         list = {} 
@@ -2161,11 +2166,7 @@ class cp_ticker(APIView):
         list = r.json()['data']['ticker']
         list[request.data['sym']+'USDT']['last'] = float(list[request.data['sym']+'USDT']['last']) / r2 
         return Response(list[request.data['sym']+'USDT'])
-        if request.data['sym'] == 'USDT':
-            r = requests.get(url = 'https://api.coinex.com/v1/common/currency/rate')
-            r = r.json()['data']['USDT_to_USD']
-            print(r)
-            return Response({'ticker':{'buy' : float(r) * General.objects.get(id =1).USDTpercent2 / 100, 'last' : float(r) * General.objects.get(id =1).USDTpercent2 / 100}})
+        
         r = requests.get(url = 'https://api.coinex.com/v1/common/currency/rate')
         r = float(r.json()['data']['USDT_to_USD'])
         coinex = CoinEx('56255CA42286443EB7D3F6DB44633C25', '30C28552C5B3337B5FC0CA16F2C50C4988D47EA67D03C5B7')
