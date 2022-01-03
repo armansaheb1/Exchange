@@ -18,82 +18,82 @@ class Command(BaseCommand):
     tradesmin = 2 / float(coin['ticker']['buy'])
     def handle(self, *args, **options):
         def trader():
-            coin = self.coinex.market_ticker(market='SOLUSDT')
-            price = float(coin['ticker']['buy'])
+            while True:
+                coin = self.coinex.market_ticker(market='SOLUSDT')
+                price = float(coin['ticker']['buy'])
 
 
 
-            if self.status == 'nodeal':
-                print('nodeal')
-                self.status = 'sdeal'
-                self.lastprice = price
-                self.tradescount = 0
+                if self.status == 'nodeal':
+                    print('nodeal')
+                    self.status = 'sdeal'
+                    self.lastprice = price
+                    self.tradescount = 0
 
 
 
-            elif self.status == 'pdeal':
-                print('pdeal')
-                if price < self.lastprice - self.step:
-                    print('----pdeal+')
-                    if self.tradescount < 5:
+                elif self.status == 'pdeal':
+                    print('pdeal')
+                    if price < self.lastprice - self.step:
+                        print('----pdeal+')
+                        if self.tradescount < 5:
+                            try:
+                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 2)
+                            except:
+                                pass
+                            self.tradescount = self.tradescount + 1
+                            self.lastprice = price
+                            print(self.tradescount)
+                    elif price > self.lastprice + self.step:
+                        print('----pdeal-')
+                        for i in range(self.tradescount):
+                            try:
+                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'sell' , amount= self.tradesmin)
+                            except:
+                                pass
+                        self.status = 'nodeal'
+
+
+                elif self.status == 'ndeal':
+                    print('ndeal')
+                    if price > self.lastprice + self.step:
+                        print('----ndeal+')
+                        if self.tradescount < 5:
+                            try:
+                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'sell' , amount= self.tradesmin)
+                            except:
+                                pass
+                            self.tradescount = self.tradescount + 1
+                            self.lastprice = price
+                            print(self.tradescount)
+                    elif price < self.lastprice - self.step:
+                        print('----ndeal-')
+                        for i in range(self.tradescount):
+                            try:
+                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 2)
+                            except:
+                                pass
+                        self.status = 'nodeal'
+                else:
+
+
+                    print('sdeal')
+                    if price > self.lastprice + self.step:
+                        
                         try:
                             self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 2)
+                            self.tradescount = self.tradescount + 1
                         except:
                             pass
-                        self.tradescount = self.tradescount + 1
+                        self.status = 'pdeal'
                         self.lastprice = price
-                        print(self.tradescount)
-                elif price > self.lastprice + self.step:
-                    print('----pdeal-')
-                    for i in range(self.tradescount):
+                    elif price < self.lastprice - self.step:
                         try:
                             self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'sell' , amount= self.tradesmin)
+                            self.tradescount = self.tradescount + 1
                         except:
                             pass
-                    self.status = 'nodeal'
-
-
-            elif self.status == 'ndeal':
-                print('ndeal')
-                if price > self.lastprice + self.step:
-                    print('----ndeal+')
-                    if self.tradescount < 5:
-                        try:
-                            self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'sell' , amount= self.tradesmin)
-                        except:
-                            pass
-                        self.tradescount = self.tradescount + 1
+                        self.status = 'ndeal'
                         self.lastprice = price
-                        print(self.tradescount)
-                elif price < self.lastprice - self.step:
-                    print('----ndeal-')
-                    for i in range(self.tradescount):
-                        try:
-                            self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 2)
-                        except:
-                            pass
-                    self.status = 'nodeal'
-            else:
-
-
-                print('sdeal')
-                if price > self.lastprice + self.step:
-                    
-                    try:
-                        self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 2)
-                        self.tradescount = self.tradescount + 1
-                    except:
-                        pass
-                    self.status = 'pdeal'
-                    self.lastprice = price
-                elif price < self.lastprice - self.step:
-                    try:
-                        self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'sell' , amount= self.tradesmin)
-                        self.tradescount = self.tradescount + 1
-                    except:
-                        pass
-                    self.status = 'ndeal'
-                    self.lastprice = price
-            time.sleep(1)
-            trader()
+                time.sleep(1)
         trader()
