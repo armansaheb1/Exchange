@@ -57,7 +57,7 @@ class Command(BaseCommand):
 
                 elif self.status == 'ndeal':
                     print('ndeal')
-                    if price < self.lastprice - self.step:
+                    if price > self.lastprice + self.step:
                         print('----ndeal+')
                         if self.tradescount < 5:
                             try:
@@ -67,7 +67,8 @@ class Command(BaseCommand):
                             self.tradescount = self.tradescount + 1
                             self.lastprice = price
                             print(self.tradescount)
-                    elif price > self.lastprice + self.step:
+                    elif price < self.lastprice - self.step:
+                        
                         
                         print('----ndeal-')
                         for i in range(self.tradescount):
