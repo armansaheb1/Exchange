@@ -87,13 +87,5 @@ class Command(BaseCommand):
                             pass
                         self.status = 'pdeal'
                         self.lastprice = price
-                    elif price < self.lastprice - self.step:
-                        try:
-                            self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'sell' , amount= self.tradesmin)
-                            self.tradescount = self.tradescount + 1
-                        except:
-                            pass
-                        self.status = 'ndeal'
-                        self.lastprice = price
                 time.sleep(1)
         trader()
