@@ -15,7 +15,7 @@ class Command(BaseCommand):
     lastprice = 0
     trades = []
     tradescount = 0
-    tradesmin = 2 / float(coin['ticker']['buy'])
+    tradesmin = 4 / float(coin['ticker']['buy'])
     def handle(self, *args, **options):
         def trader():
             while True:
@@ -38,7 +38,7 @@ class Command(BaseCommand):
                         print('----pdeal+')
                         if self.tradescount < 5:
                             try:
-                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 2)
+                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 4)
                             except:
                                 pass
                             self.tradescount = self.tradescount + 1
@@ -70,7 +70,7 @@ class Command(BaseCommand):
                         print('----ndeal-')
                         for i in range(self.tradescount):
                             try:
-                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 2)
+                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 4)
                             except:
                                 pass
                         self.status = 'nodeal'
@@ -81,7 +81,7 @@ class Command(BaseCommand):
                     if price > self.lastprice + self.step:
                         
                         try:
-                            self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 2)
+                            self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 4)
                             self.tradescount = self.tradescount + 1
                         except:
                             pass
