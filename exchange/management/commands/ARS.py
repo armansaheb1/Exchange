@@ -11,6 +11,7 @@ class Command(BaseCommand):
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
     coin = coinex.market_ticker(market='SOLUSDT')
     averagechange = float(coin['ticker']['buy']) * 0.001
+    aver = float(coin['ticker']['buy']) * 0.01
     step = averagechange
     lastprice = 0
     trades = []
@@ -81,7 +82,7 @@ class Command(BaseCommand):
 
 
                     print('sdeal')
-                    if price > self.lastprice + self.step:
+                    if price < self.lastprice - self.aver:
                         
                         try:
                             self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 4)
