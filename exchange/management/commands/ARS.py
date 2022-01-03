@@ -92,5 +92,7 @@ class Command(BaseCommand):
                             pass
                         self.status = 'pdeal'
                         self.lastprice = price
+                    elif price < self.lastprice:
+                        self.lastprice = price
                 time.sleep(1)
         trader()
