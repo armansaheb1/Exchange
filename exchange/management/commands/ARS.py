@@ -11,7 +11,7 @@ class Command(BaseCommand):
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
     coin = coinex.market_ticker(market='BTCUSDT')
     averagechange = float(coin['ticker']['buy']) * 0.001
-    aver = float(coin['ticker']['buy']) * 0.01
+    aver = float(coin['ticker']['buy']) * 0.005
     step = averagechange
     lastprice = float(coin['ticker']['buy'])
     trades = []
@@ -54,7 +54,7 @@ class Command(BaseCommand):
                                 self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'sell' , amount= self.tradesmin)
                             except:
                                 pass
-                        self.status = 'nodeal'
+                        self.status = 'sdeal'
 
 
                 elif self.status == 'ndeal':
@@ -78,7 +78,7 @@ class Command(BaseCommand):
                                 self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
                             except:
                                 pass
-                        self.status = 'nodeal'
+                        self.status = 'sdeal'
                 else:
 
 
