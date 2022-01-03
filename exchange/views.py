@@ -2366,7 +2366,9 @@ class cp_deposit(APIView):
             serializer.save()
             return Response(serializer.data , status=status.HTTP_201_CREATED)
         else:
+            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
         
 class cp_wallets(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
