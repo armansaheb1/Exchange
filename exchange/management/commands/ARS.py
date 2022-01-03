@@ -30,6 +30,7 @@ class Command(BaseCommand):
                         self.tradescount = 0
                     if price > self.lastprice:
                         self.lastprice = price
+                        print('raised')
 
 
 
