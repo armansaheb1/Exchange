@@ -698,7 +698,7 @@ class CpDepositRequest(models.Model):
     hash = models.CharField(max_length=1000)
     currency = models.CharField(max_length=10)
     date = models.DateTimeField(default=timezone.now())
-    amount = models.BigIntegerField()
+    amount = models.FloatField()
     act = models.IntegerField(default=0)
     def get_user(self):
         return self.user.username
