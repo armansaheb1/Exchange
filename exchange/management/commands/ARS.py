@@ -39,14 +39,13 @@ class Command(BaseCommand):
                     if price > self.lastprice + self.step:
                         
                         print('----pdeal+')
-                        if self.tradescount < 5:
-                            try:
-                                self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
-                            except:
-                                pass
-                            self.tradescount = self.tradescount + 1
-                            self.lastprice = price
-                            print(self.tradescount)
+                        try:
+                            self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
+                        except:
+                            pass
+                        self.tradescount = self.tradescount + 1
+                        self.lastprice = price
+                        print(self.tradescount)
                     elif price < self.lastprice - self.step:
                         print('----pdeal-')
                         for i in range(self.tradescount):
@@ -61,14 +60,13 @@ class Command(BaseCommand):
                     print('ndeal')
                     if price > self.lastprice + self.step:
                         print('----ndeal+')
-                        if self.tradescount < 5:
-                            try:
-                                self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'sell' , amount= self.tradesmin)
-                            except:
-                                pass
-                            self.tradescount = self.tradescount + 1
-                            self.lastprice = price
-                            print(self.tradescount)
+                        try:
+                            self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'sell' , amount= self.tradesmin)
+                        except:
+                            pass
+                        self.tradescount = self.tradescount + 1
+                        self.lastprice = price
+                        print(self.tradescount)
                     elif price < self.lastprice - self.step:
                         
                         
