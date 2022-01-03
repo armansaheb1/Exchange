@@ -94,5 +94,6 @@ class Command(BaseCommand):
                         self.lastprice = price
                     elif price < self.lastprice:
                         self.lastprice = price
+                        print('decreasde')
                 time.sleep(1)
         trader()
