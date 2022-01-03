@@ -13,7 +13,7 @@ class Command(BaseCommand):
     averagechange = float(coin['ticker']['buy']) * 0.001
     aver = float(coin['ticker']['buy']) * 0.01
     step = averagechange
-    lastprice = 0
+    lastprice = float(coin['ticker']['buy'])
     trades = []
     tradescount = 0
     tradesmin = 4 / float(coin['ticker']['buy'])
@@ -22,14 +22,12 @@ class Command(BaseCommand):
             while True:
                 coin = self.coinex.market_ticker(market='BTCUSDT')
                 price = float(coin['ticker']['buy'])
-
-
-
                 if self.status == 'nodeal':
                     print('nodeal')
-                    self.status = 'sdeal'
-                    self.lastprice = price
-                    self.tradescount = 0
+                    if price < self.lastprice - self.aver:
+                        self.status = 'sdeal'
+                        self.lastprice = price
+                        self.tradescount = 0
 
 
 
@@ -82,7 +80,7 @@ class Command(BaseCommand):
 
 
                     print('sdeal')
-                    if price < self.lastprice - self.aver:
+                    if price > self.lastprice + self.step:
                         
                         try:
                             self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
