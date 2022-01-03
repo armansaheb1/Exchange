@@ -9,7 +9,7 @@ class Command(BaseCommand):
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
     status = 'nodeal'
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
-    coin = coinex.market_ticker(market='SOLUSDT')
+    coin = coinex.market_ticker(market='BTCUSDT')
     averagechange = float(coin['ticker']['buy']) * 0.001
     aver = float(coin['ticker']['buy']) * 0.01
     step = averagechange
@@ -20,7 +20,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         def trader():
             while True:
-                coin = self.coinex.market_ticker(market='SOLUSDT')
+                coin = self.coinex.market_ticker(market='BTCUSDT')
                 price = float(coin['ticker']['buy'])
 
 
@@ -40,7 +40,7 @@ class Command(BaseCommand):
                         print('----pdeal+')
                         if self.tradescount < 5:
                             try:
-                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 4)
+                                self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
                             except:
                                 pass
                             self.tradescount = self.tradescount + 1
@@ -50,7 +50,7 @@ class Command(BaseCommand):
                         print('----pdeal-')
                         for i in range(self.tradescount):
                             try:
-                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'sell' , amount= self.tradesmin)
+                                self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'sell' , amount= self.tradesmin)
                             except:
                                 pass
                         self.status = 'nodeal'
@@ -62,7 +62,7 @@ class Command(BaseCommand):
                         print('----ndeal+')
                         if self.tradescount < 5:
                             try:
-                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'sell' , amount= self.tradesmin)
+                                self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'sell' , amount= self.tradesmin)
                             except:
                                 pass
                             self.tradescount = self.tradescount + 1
@@ -74,7 +74,7 @@ class Command(BaseCommand):
                         print('----ndeal-')
                         for i in range(self.tradescount):
                             try:
-                                self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 4)
+                                self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
                             except:
                                 pass
                         self.status = 'nodeal'
@@ -85,7 +85,7 @@ class Command(BaseCommand):
                     if price < self.lastprice - self.aver:
                         
                         try:
-                            self.coinex.order_market(account_id= 76 , market='SOLUSDT' , type = 'buy' , amount= 4)
+                            self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
                             self.tradescount = self.tradescount + 1
                         except:
                             pass
