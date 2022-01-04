@@ -11,7 +11,7 @@ class Command(BaseCommand):
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
     coin = coinex.market_ticker(market='BTCUSDT')
     averagechange = float(coin['ticker']['buy']) * 0.001
-    aver = float(coin['ticker']['buy']) * 0.005
+    aver = float(coin['ticker']['buy']) * 0.001
     step = averagechange
     lastprice = float(coin['ticker']['buy'])
     trades = []
