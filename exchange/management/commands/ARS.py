@@ -2,10 +2,12 @@ from exchange.views import currency
 from exchange.models import Leverage, Price , Staff,  UserInfo , Currencies , Wallet , Verify , BankCards, Transactions, Settings, Subjects, Tickets, Pages , Forgetrequest
 from django.core.management.base import BaseCommand, CommandError
 import requests
+from .lib import CoinexPerpetualApi
 import time
 from .lib.coinex import CoinEx
 
 class Command(BaseCommand):
+    robot = CoinexPerpetualApi('130F31B38E6146DE96A96925C1238AB3','2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8')
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
     status = 'nodeal'
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
@@ -20,7 +22,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         def trader():
             while True:
-                coin = self.coinex.market_ticker(market='BTCUSDT')
+                coin = self.robot.close_market(
+                    'BTCUSDT',
+                )
+                print(coin)
+                return
                 price = float(coin['ticker']['buy'])
                 if self.status == 'nodeal':
                     print('nodeal')
