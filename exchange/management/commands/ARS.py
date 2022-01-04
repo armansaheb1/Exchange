@@ -54,6 +54,7 @@ class Command(BaseCommand):
                             except:
                                 pass
                         self.status = 'sdeal'
+                        self.tradescount = 0
 
 
                 elif self.status == 'ndeal':
