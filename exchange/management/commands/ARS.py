@@ -83,12 +83,8 @@ class Command(BaseCommand):
 
                     print('sdeal')
                     if price > self.lastprice + self.step:
-                        
-                        try:
-                            self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
-                            self.tradescount = self.tradescount + 1
-                        except:
-                            pass
+                        self.coinex.order_market(account_id= 1 , market='BTCUSDT' , type = 'buy' , amount= 4)
+                        self.tradescount = self.tradescount + 1
                         self.status = 'pdeal'
                         self.lastprice = price
                     elif price < self.lastprice:
