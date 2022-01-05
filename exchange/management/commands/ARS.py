@@ -47,7 +47,7 @@ class Command(BaseCommand):
                             tr = self.robot.put_market_order(
                                 market = 'ADAUSDT',
                                 side = 2,
-                                amount = 3
+                                amount = 5
                             )
                             self.tradesp.append(tr['data']['position_id'])
                         except:
@@ -84,7 +84,7 @@ class Command(BaseCommand):
                                 tr = self.robot.put_market_order(
                                     market = 'ADAUSDT',
                                     side = 1,
-                                    amount = 3
+                                    amount = 5
                                 )
                                 self.tradesn.append(tr['data']['position_id'])
                             except:
@@ -117,7 +117,7 @@ class Command(BaseCommand):
                                 tr = self.robot.put_market_order(
                                     market = 'ADAUSDT',
                                     side = 2,
-                                    amount = 3
+                                    amount = 5
                                 )
                                 self.tradesp.append(tr['data']['position_id'])
                             except:
@@ -130,7 +130,7 @@ class Command(BaseCommand):
                             tr = self.robot.put_market_order(
                                 market = 'ADAUSDT',
                                 side = 1,
-                                amount = 3
+                                amount = 5
                             )
                             self.tradesn.append(tr['data']['position_id'])
                         except:
