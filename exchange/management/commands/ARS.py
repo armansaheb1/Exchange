@@ -16,7 +16,7 @@ class Command(BaseCommand):
         'BTCUSDT',
     )
     averagechange = float(coin['data']['ticker']['buy']) * 0.001
-    aver = float(coin['data']['ticker']['buy']) * 0.0001
+    aver = float(coin['data']['ticker']['buy']) * 0.0005
     step = averagechange
     lastprice = float(coin['data']['ticker']['buy'])
     lastprice2 = float(coin['data']['ticker']['buy'])
