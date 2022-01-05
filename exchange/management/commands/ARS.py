@@ -45,7 +45,7 @@ class Command(BaseCommand):
                                 side = 2,
                                 amount = 0.0001
                             )
-                            self.tradesp.append(tr['data']['order_id'])
+                            self.tradesp.append(tr['data']['position_id'])
                         except:
                             pass
                         self.lastprice = price
@@ -54,13 +54,12 @@ class Command(BaseCommand):
                             self.lastprice2 = price
                             print('increased')
                     elif price < self.lastprice2 - (self.step/2):
+                        print('----pdeal-')
                         while len(self.tradesp):
-                            tr = self.robot.put_market_order(
-                                market = 'BTCUSDT',
-                                side = 1,
-                                amount = 0.0001
+                            tr = self.robot.close_market(
+                                'BTCUSDT',
+                                int(item)
                             )
-                            print('----pdeal- :')
                             self.tradesp.remove(item)
                         self.status = 'sdeal'
 
@@ -76,7 +75,7 @@ class Command(BaseCommand):
                                     side = 1,
                                     amount = 0.0001
                                 )
-                                self.tradesn.append(tr['data']['order_id'])
+                                self.tradesn.append(tr['data']['position_id'])
                             except:
                                 pass
                             self.lastprice = price
@@ -86,14 +85,12 @@ class Command(BaseCommand):
                             self.lastprice2 = price
                             print('decreased')
                     elif price > self.lastprice2 + (self.step/2):
-                        
+                        print('----ndeal-')
                         while len(self.tradesn):
-                            tr = self.robot.put_market_order(
-                                    market = 'BTCUSDT',
-                                    side = 2,
-                                    amount = 0.0001
-                                )
-                            print('----ndeal-')
+                            tr = self.robot.close_market(
+                                'BTCUSDT',
+                                int(item)
+                            )
                             self.tradesn.remove(item)
                                 
                         self.status = 'sdeal'
@@ -108,7 +105,7 @@ class Command(BaseCommand):
                                     side = 2,
                                     amount = 0.0001
                                 )
-                                self.tradesp.append(tr['data']['order_id'])
+                                self.tradesp.append(tr['data']['position_id'])
                             except:
                                 pass
                             self.status = 'pdeal'
@@ -121,7 +118,7 @@ class Command(BaseCommand):
                                 side = 1,
                                 amount = 0.0001
                             )
-                            self.tradesn.append(tr['data']['order_id'])
+                            self.tradesn.append(tr['data']['position_id'])
                         except:
                             pass
                         self.status = 'ndeal'
