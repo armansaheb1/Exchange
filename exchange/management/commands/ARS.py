@@ -8,15 +8,15 @@ from .lib.coinex import CoinEx
 
 class Command(BaseCommand):
     robot = CoinexPerpetualApi('130F31B38E6146DE96A96925C1238AB3','2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8')
-    robot.adjust_leverage(position_type=2, market= 'BTCUSDT', leverage= '5')
+    robot.adjust_leverage(position_type=2, market= 'ADAUSDT', leverage= '5')
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
     status = 'nodeal'
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
     coin = robot.get_market_state(
-        'BTCUSDT',
+        'ADAUSDT',
     )
-    averagechange = float(coin['data']['ticker']['buy']) * 0.001
-    aver = float(coin['data']['ticker']['buy']) * 0.0005
+    averagechange = float(coin['data']['ticker']['buy']) * 0.0008
+    aver = float(coin['data']['ticker']['buy']) * 0.0003
     step = averagechange
     lastprice = float(coin['data']['ticker']['buy'])
     lastprice2 = float(coin['data']['ticker']['buy'])
@@ -27,7 +27,7 @@ class Command(BaseCommand):
         def trader():
             while True:
                 coin2 = self.robot.get_market_state(
-                    'BTCUSDT',
+                    'ADAUSDT',
                 )
                 price = float(coin2['data']['ticker']['buy'])
                 if self.status == 'nodeal':
@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
                 elif self.status == 'pdeal':
                     list = self.robot.query_position_pending(
-                            'BTCUSDT',
+                            'ADAUSDT',
                         )
                     count = len(list['data'])
                     if price > self.lastprice + self.step:
@@ -45,7 +45,7 @@ class Command(BaseCommand):
                         print('----pdeal+')
                         try:
                             tr = self.robot.put_market_order(
-                                market = 'BTCUSDT',
+                                market = 'ADAUSDT',
                                 side = 2,
                                 amount = 0.0001
                             )
@@ -60,11 +60,11 @@ class Command(BaseCommand):
                     elif price < self.lastprice2 - (self.aver * (count + 1)):
                         print('----pdeal-')
                         list = self.robot.query_position_pending(
-                            'BTCUSDT',
+                            'ADAUSDT',
                         )
                         for item in list['data']:
                             tr = self.robot.close_market(
-                                'BTCUSDT',
+                                'ADAUSDT',
                                 int(item['position_id'])
                             )
                         self.tradesp = []
@@ -73,7 +73,7 @@ class Command(BaseCommand):
 
                 elif self.status == 'ndeal':
                     list = self.robot.query_position_pending(
-                            'BTCUSDT',
+                            'ADAUSDT',
                         )
                     count = len(list['data'])
                     if price < self.lastprice - self.step:
@@ -82,7 +82,7 @@ class Command(BaseCommand):
                         
                             try:
                                 tr = self.robot.put_market_order(
-                                    market = 'BTCUSDT',
+                                    market = 'ADAUSDT',
                                     side = 1,
                                     amount = 0.0001
                                 )
@@ -98,11 +98,11 @@ class Command(BaseCommand):
                     elif price > self.lastprice2 + (self.step * (count + 1)):
                         print('----ndeal-')
                         list = self.robot.query_position_pending(
-                            'BTCUSDT',
+                            'ADAUSDT',
                         )
                         for item in list['data']:
                             tr = self.robot.close_market(
-                                'BTCUSDT',
+                                'ADAUSDT',
                                 int(item['position_id'])
                             )
                         self.tradesn = []
@@ -115,7 +115,7 @@ class Command(BaseCommand):
                         if len(self.tradesn) < 3:
                             try:
                                 tr = self.robot.put_market_order(
-                                    market = 'BTCUSDT',
+                                    market = 'ADAUSDT',
                                     side = 2,
                                     amount = 0.0001
                                 )
@@ -128,7 +128,7 @@ class Command(BaseCommand):
                     elif price < self.lastprice - self.aver:
                         try:
                             tr = self.robot.put_market_order(
-                                market = 'BTCUSDT',
+                                market = 'ADAUSDT',
                                 side = 1,
                                 amount = 0.0001
                             )
