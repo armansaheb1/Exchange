@@ -15,8 +15,8 @@ class Command(BaseCommand):
     coin = robot.get_market_state(
         'BTCUSDT',
     )
-    averagechange = float(coin['data']['ticker']['buy']) * 0.0004
-    aver = float(coin['data']['ticker']['buy']) * 0.0004
+    averagechange = float(coin['data']['ticker']['buy']) * 0.001
+    aver = float(coin['data']['ticker']['buy']) * 0.0001
     step = averagechange
     lastprice = float(coin['data']['ticker']['buy'])
     lastprice2 = float(coin['data']['ticker']['buy'])
@@ -53,7 +53,7 @@ class Command(BaseCommand):
                     elif price > self.lastprice2:
                             self.lastprice2 = price
                             print('increased')
-                    elif price < self.lastprice2 - (self.step/2):
+                    elif price < self.lastprice2 - (self.step):
                         print('----pdeal-')
                         list = self.robot.query_position_pending(
                             'BTCUSDT',
@@ -87,7 +87,7 @@ class Command(BaseCommand):
                         elif price < self.lastprice2:
                             self.lastprice2 = price
                             print('decreased')
-                    elif price > self.lastprice2 + (self.step/2):
+                    elif price > self.lastprice2 + (self.step):
                         print('----ndeal-')
                         list = self.robot.query_position_pending(
                             'BTCUSDT',
@@ -103,7 +103,7 @@ class Command(BaseCommand):
                 else:
 
 
-                    if price > self.lastprice + self.step:
+                    if price > self.lastprice + self.aver:
                         if len(self.tradesn) < 3:
                             try:
                                 tr = self.robot.put_market_order(
@@ -117,7 +117,7 @@ class Command(BaseCommand):
                             self.status = 'pdeal'
                             self.lastprice = price
                             self.lastprice2 = price
-                    elif price < self.lastprice - self.step:
+                    elif price < self.lastprice - self.aver:
                         try:
                             tr = self.robot.put_market_order(
                                 market = 'BTCUSDT',
