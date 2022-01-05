@@ -8,7 +8,7 @@ from .lib.coinex import CoinEx
 
 class Command(BaseCommand):
     robot = CoinexPerpetualApi('130F31B38E6146DE96A96925C1238AB3','2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8')
-    robot.adjust_leverage(position_type=2, market= 'BTCUSDT', leverage= '3')
+    robot.adjust_leverage(position_type=2, market= 'BTCUSDT', leverage= '5')
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
     status = 'nodeal'
     coinex = CoinEx('130F31B38E6146DE96A96925C1238AB3', '2AA13CE30B30A1EE6798243154A4C1C5104A006BF6E8F0F8' )
@@ -53,7 +53,7 @@ class Command(BaseCommand):
                     elif price > self.lastprice2:
                             self.lastprice2 = price
                             print('increased')
-                    elif price < self.lastprice2 - (self.step):
+                    elif price < self.lastprice2 - (self.step/2):
                         print('----pdeal-')
                         list = self.robot.query_position_pending(
                             'BTCUSDT',
@@ -87,7 +87,7 @@ class Command(BaseCommand):
                         elif price < self.lastprice2:
                             self.lastprice2 = price
                             print('decreased')
-                    elif price > self.lastprice2 + (self.step):
+                    elif price > self.lastprice2 + (self.step/2):
                         print('----ndeal-')
                         list = self.robot.query_position_pending(
                             'BTCUSDT',
