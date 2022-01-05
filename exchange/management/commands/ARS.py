@@ -46,7 +46,7 @@ class Command(BaseCommand):
                         try:
                             tr = self.robot.put_market_order(
                                 market = 'ADAUSDT',
-                                side = 2,
+                                side = 1,
                                 amount = 5
                             )
                             self.tradesp.append(tr['data']['position_id'])
@@ -83,7 +83,7 @@ class Command(BaseCommand):
                             try:
                                 tr = self.robot.put_market_order(
                                     market = 'ADAUSDT',
-                                    side = 1,
+                                    side = 2,
                                     amount = 5
                                 )
                                 self.tradesn.append(tr['data']['position_id'])
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                         elif price < self.lastprice2:
                             self.lastprice2 = price
                             print('decreased')
-                    elif price > self.lastprice2 + (self.aver * 1.5):
+                    elif price > self.lastprice2 + (self.aver):
                         print('----ndeal-')
                         list = self.robot.query_position_pending(
                             'ADAUSDT',
@@ -116,7 +116,7 @@ class Command(BaseCommand):
                             try:
                                 tr = self.robot.put_market_order(
                                     market = 'ADAUSDT',
-                                    side = 2,
+                                    side = 1,
                                     amount = 5
                                 )
                                 self.tradesp.append(tr['data']['position_id'])
@@ -129,7 +129,7 @@ class Command(BaseCommand):
                         try:
                             tr = self.robot.put_market_order(
                                 market = 'ADAUSDT',
-                                side = 1,
+                                side = 2,
                                 amount = 5
                             )
                             self.tradesn.append(tr['data']['position_id'])
