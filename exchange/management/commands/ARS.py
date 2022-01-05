@@ -15,8 +15,8 @@ class Command(BaseCommand):
     coin = robot.get_market_state(
         'ADAUSDT',
     )
-    averagechange = float(coin['data']['ticker']['buy']) * 0.0008
-    aver = float(coin['data']['ticker']['buy']) * 0.0003
+    averagechange = float(coin['data']['ticker']['buy']) * 0.002
+    aver = float(coin['data']['ticker']['buy']) * 0.001
     step = averagechange
     lastprice = float(coin['data']['ticker']['buy'])
     lastprice2 = float(coin['data']['ticker']['buy'])
