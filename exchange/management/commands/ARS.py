@@ -57,7 +57,7 @@ class Command(BaseCommand):
                     elif price > self.lastprice2:
                             self.lastprice2 = price
                             print('increased')
-                    elif price < self.lastprice2 - (self.aver * count):
+                    elif price < self.lastprice2 - (self.aver * (count + 1)):
                         print('----pdeal-')
                         list = self.robot.query_position_pending(
                             'BTCUSDT',
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                         elif price < self.lastprice2:
                             self.lastprice2 = price
                             print('decreased')
-                    elif price > self.lastprice2 + (self.aver * count):
+                    elif price > self.lastprice2 + (self.step * (count + 1)):
                         print('----ndeal-')
                         list = self.robot.query_position_pending(
                             'BTCUSDT',
