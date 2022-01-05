@@ -72,6 +72,10 @@ class Command(BaseCommand):
 
 
                 elif self.status == 'ndeal':
+                    list = self.robot.query_position_pending(
+                            'BTCUSDT',
+                        )
+                    count = len(list['data'])
                     if price < self.lastprice - self.step:
                         print('----ndeal+')
                         if len(self.tradesn) < 3:
