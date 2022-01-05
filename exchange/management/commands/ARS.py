@@ -57,7 +57,7 @@ class Command(BaseCommand):
                     elif price > self.lastprice2:
                             self.lastprice2 = price
                             print('increased')
-                    elif price < self.lastprice2 - (self.aver * (count + 1)):
+                    elif price < self.lastprice2 - (self.aver):
                         print('----pdeal-')
                         list = self.robot.query_position_pending(
                             'ADAUSDT',
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                         elif price < self.lastprice2:
                             self.lastprice2 = price
                             print('decreased')
-                    elif price > self.lastprice2 + (self.step * (count + 1)):
+                    elif price > self.lastprice2 + (self.aver * 1.5):
                         print('----ndeal-')
                         list = self.robot.query_position_pending(
                             'ADAUSDT',
@@ -125,7 +125,7 @@ class Command(BaseCommand):
                             self.status = 'pdeal'
                             self.lastprice = price
                             self.lastprice2 = price
-                    elif price < self.lastprice - self.aver:
+                    elif price < self.lastprice - (self.aver * 1.5):
                         try:
                             tr = self.robot.put_market_order(
                                 market = 'ADAUSDT',
