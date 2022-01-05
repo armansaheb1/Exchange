@@ -55,12 +55,15 @@ class Command(BaseCommand):
                             print('increased')
                     elif price < self.lastprice2 - (self.step/2):
                         print('----pdeal-')
-                        while len(self.tradesp):
+                        list = self.robot.query_position_pending(
+                            'BTCUSDT',
+                        )
+                        for item in list['data']:
                             tr = self.robot.close_market(
                                 'BTCUSDT',
-                                int(item)
+                                int(item['position_id'])
                             )
-                            self.tradesp.remove(item)
+                        self.tradesp = []
                         self.status = 'sdeal'
 
 
@@ -86,12 +89,15 @@ class Command(BaseCommand):
                             print('decreased')
                     elif price > self.lastprice2 + (self.step/2):
                         print('----ndeal-')
-                        while len(self.tradesn):
+                        list = self.robot.query_position_pending(
+                            'BTCUSDT',
+                        )
+                        for item in list['data']:
                             tr = self.robot.close_market(
                                 'BTCUSDT',
-                                int(item)
+                                int(item['position_id'])
                             )
-                            self.tradesn.remove(item)
+                        self.tradesn = []
                                 
                         self.status = 'sdeal'
                 else:
