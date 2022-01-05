@@ -54,7 +54,7 @@ class Command(BaseCommand):
                             self.lastprice2 = price
                             print('increased')
                     elif price < self.lastprice2 - (self.step/2):
-                        for item in self.tradesp:
+                        while len(self.tradesp):
                             tr = self.robot.put_market_order(
                                 market = 'BTCUSDT',
                                 side = 1,
@@ -87,7 +87,7 @@ class Command(BaseCommand):
                             print('decreased')
                     elif price > self.lastprice2 + (self.step/2):
                         
-                        for item in self.tradesn:
+                        while len(self.tradesn):
                             tr = self.robot.put_market_order(
                                     market = 'BTCUSDT',
                                     side = 2,
