@@ -146,7 +146,7 @@ class buyrequest(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -189,7 +189,7 @@ class buyapp(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -235,7 +235,7 @@ class sellrequest(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -282,7 +282,7 @@ class exchangerequest(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -330,7 +330,7 @@ class buyoutrequest(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -378,7 +378,7 @@ class selloutrequest(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -431,7 +431,7 @@ class PerpetualRequest(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -552,7 +552,7 @@ class Cp_Withdraw(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -660,7 +660,7 @@ class WithdrawRequest(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -706,7 +706,7 @@ class CpDepositRequest(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -850,7 +850,7 @@ class Subjects(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now- self.date).total_seconds()
+        dif = (timezone.now()- self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
