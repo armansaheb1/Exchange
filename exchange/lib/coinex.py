@@ -65,8 +65,8 @@ class CoinEx:
     def margin_loan(self, market, coin_type, amount):
         return self._v1('margin/loan', method='post', auth=True, market=market, coin_type=coin_type, amount=amount)
 
-    def margin_loan_get(self, market, coin_type, account_id):
-        return self._v1(f'res/margin/loan?account_id{account_id}', method='get', auth=True, market=market, coin_type=coin_type, account_id = account_id)
+    def margin_loan_get(self, account_id):
+        return self._v1(f'res/margin/loan?account_id{account_id}', method='get', auth=True)
 
     def margin_flat(self, market, coin_type, amount, **params):
         return self._v1('margin/flat', method='post', auth=True, market=market, coin_type=coin_type, amount=amount, **params)
