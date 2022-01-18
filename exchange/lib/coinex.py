@@ -199,7 +199,7 @@ class CoinEx:
             resp = requests.post('https://www.coinex.zone/res/' + path, json=params, headers=headers)
         else:
             fn = getattr(requests, method)
-            resp = fn('https://api.coinex.com/res/' + path, params=params, headers=headers)
+            resp = fn('https://www.coinex.zone/res/' + path, params=params, headers=headers)
 
         return self._process_response(resp)
 
