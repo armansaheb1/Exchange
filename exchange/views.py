@@ -2135,7 +2135,14 @@ class cp_borrow(APIView):
     def post(self , request, format=None):   
         coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
         return Response(coinex.margin_loan(market =  request.data['market'],amount = request.data['amount'],coin_type=request.data['coin']))
-        
+    
+class cp_borrow_get(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
+    permission_classes = [IsAuthenticated]
+    def get(self , request, format=None):   
+        coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
+        return Response(coinex.margin_loan_get(market =  request.data['market'],amount = request.data['amount'],coin_type=request.data['coin']))
+            
 class cp_repay(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
     permission_classes = [IsAuthenticated]
