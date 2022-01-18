@@ -2272,7 +2272,7 @@ class cp_stop_cancel_order(APIView):
     permission_classes = [IsAuthenticated]
     def post(self , request):
         coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
-        return Response(coinex.order_stop_pending_cancel( market = request.data['market'],id = int(request.data['id'])))
+        return Response(coinex.order_stop_pending_cancel( market = request.data['market'],id = request.data['id']))
         
 class cp_mg_market(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
