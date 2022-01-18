@@ -66,7 +66,7 @@ class CoinEx:
         return self._v1('margin/loan', method='post', auth=True, market=market, coin_type=coin_type, amount=amount)
 
     def margin_loan_get(self, account_id):
-        return self._v1(f'res/margin/loan?account_id{account_id}', method='get', auth=True)
+        return self._res(f'res/margin/loan?account_id{account_id}', method='get', auth=True)
 
     def margin_flat(self, market, coin_type, amount, **params):
         return self._v1('margin/flat', method='post', auth=True, market=market, coin_type=coin_type, amount=amount, **params)
@@ -177,6 +177,29 @@ class CoinEx:
         else:
             fn = getattr(requests, method)
             resp = fn('https://api.coinex.com/v1/' + path, params=params, headers=headers)
+
+        return self._process_response(resp)
+
+    def _res(self, path, method='get', auth=False, **params):
+        headers = dict(self._headers)
+
+        if auth:
+            if not self._access_id or not self._secret:
+                raise CoinExApiError('API keys not configured')
+
+            params.update(access_id=self._access_id)
+            params.update(tonce=int(time.time() * 1000))
+
+        params = collections.OrderedDict(sorted(params.items()))
+
+        if auth:
+            headers.update(Authorization=self._sign(params))
+
+        if method == 'post':
+            resp = requests.post('https://api.coinex.com/res/' + path, json=params, headers=headers)
+        else:
+            fn = getattr(requests, method)
+            resp = fn('https://api.coinex.com/res/' + path, params=params, headers=headers)
 
         return self._process_response(resp)
 
