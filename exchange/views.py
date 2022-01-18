@@ -2139,7 +2139,7 @@ class cp_borrow(APIView):
 class cp_borrow_get(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
     permission_classes = [IsAuthenticated]
-    def get(self , request, format=None):   
+    def post(self , request, format=None):   
         coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
         return Response(coinex.margin_loan_get(account_id =  request.data['mid']))
             
