@@ -146,7 +146,7 @@ class CoinEx:
         return self._v1('order/pending', method='delete', auth=True, market=market, id=id)
     
     def order_stop_pending_cancel(self, market, account_id, id):
-        return self._v1('order/stop/pending', method='delete', auth=True, market=market, account_id=account_id, order_id=id)
+        return self._v1('order/stop/pending', method='delete', auth=True, market=market, account_id=account_id, id=id)
 
     def order_pending_cancel_all(self, account_id, market):
         return self._v1('order/pending', method='delete', auth=True, account_id=account_id, market=market)
