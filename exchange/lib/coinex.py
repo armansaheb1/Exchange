@@ -196,7 +196,7 @@ class CoinEx:
             headers.update(Authorization=self._sign(params))
 
         if method == 'post':
-            resp = requests.post('https://api.coinex.com/res/' + path, json=params, headers=headers)
+            resp = requests.post('https://www.coinex.zone/res/' + path, json=params, headers=headers)
         else:
             fn = getattr(requests, method)
             resp = fn('https://api.coinex.com/res/' + path, params=params, headers=headers)
