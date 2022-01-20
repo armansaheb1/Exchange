@@ -13,5 +13,6 @@ class Command(BaseCommand):
         list = r['data'].keys()
         for item in list :
             if(len(Leverage.objects.filter(symbol = f'{item}USDT')) or len(Leverage.objects.filter(symbol = f'{item}BTC'))):
-                lev = Cp_Currencies(name=item, brand = r['data'][item]['asset'], chain = r['data'][item]['chain'], can_deposit = r['data'][item]['can_deposit'], can_withdraw = r['data'][item]['can_withdraw'], deposit_least_amount = r['data'][item]['deposit_least_amount'] , withdraw_least_amount = r['data'][item]['withdraw_least_amount'] , withdraw_tx_fee = r['data'][item]['withdraw_tx_fee'] )
-                lev.save()
+                if not len(Cp_Currencies.objects.filter(name=item)):
+                    lev = Cp_Currencies(name=item, brand = r['data'][item]['asset'], chain = r['data'][item]['chain'], can_deposit = r['data'][item]['can_deposit'], can_withdraw = r['data'][item]['can_withdraw'], deposit_least_amount = r['data'][item]['deposit_least_amount'] , withdraw_least_amount = r['data'][item]['withdraw_least_amount'] , withdraw_tx_fee = r['data'][item]['withdraw_tx_fee'] )
+                    lev.save()
