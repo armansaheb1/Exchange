@@ -1024,6 +1024,9 @@ class Leverage(models.Model):
     buymax = models.FloatField(null=True)
     sellmin = models.FloatField(null=True)
     sellmax = models.FloatField(null=True)
+    def __str__(self):
+        return self.symbol
+
 
 class PriceHistory(models.Model):
     rial = models.FloatField(default=1)
