@@ -71,7 +71,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://amizax.com",
     "https://www.amizax.com",
     "https://arsdev.ir",
-    "https://www.arsdev.ir"
+    "https://www.arsdev.ir",
+    "http://localhost:8080"
 ]
 
 MIDDLEWARE = [
