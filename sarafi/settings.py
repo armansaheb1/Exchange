@@ -70,8 +70,10 @@ INSTALLED_APPS = [
 CORS_ALLOWED_ORIGINS = [
     "https://amizax.com",
     "https://www.amizax.com",
-    "https://arsdev.ir",
-    "https://www.arsdev.ir",
+    "https://arsdesign.ir",
+    "https://www.arsdesign.ir",
+    "http://arsdesign.ir",
+    "http://www.arsdesign.ir",
     "http://localhost:8080"
 ]
 
