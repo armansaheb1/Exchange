@@ -114,7 +114,7 @@ DATABASES = {
         'NAME': 'myproject',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'HOST': 'amizax.com',
         'PORT': '5433',
     }
 }
