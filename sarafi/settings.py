@@ -24,7 +24,7 @@ ROOT = 'https://amizax.com'
 SECRET_KEY = 'django-insecure-ra$$l%4d2y4i!5#=(n58_u988+gdn8$st2^rtx-l0buiwhi7kc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['amizax.com', 'www.amizax.com' , 'arsdev.ir', 'www.arsdev.ir']
 
@@ -70,7 +70,11 @@ INSTALLED_APPS = [
 CORS_ALLOWED_ORIGINS = [
     "https://amizax.com",
     "https://www.amizax.com",
-
+    "https://arsdesign.ir",
+    "https://www.arsdesign.ir",
+    "http://arsdesign.ir",
+    "http://www.arsdesign.ir",
+    "http://localhost:8080"
 ]
 
 MIDDLEWARE = [
@@ -108,14 +112,15 @@ WSGI_APPLICATION = 'sarafi.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'myproject',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
-        'PORT' : '5432'
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
