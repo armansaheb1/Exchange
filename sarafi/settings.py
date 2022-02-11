@@ -120,7 +120,7 @@ DATABASES = {
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': os.environ.get('QOVERY_POSTGRESQL_Z2BDEA11F_PORT', 5432),
     }
 }
 
