@@ -74,7 +74,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.arsdesign.ir",
     "http://arsdesign.ir",
     "http://www.arsdesign.ir",
-    "127.0.0.1:8080"
+    "http://127.0.0.1:8080"
 ]
 
 MIDDLEWARE = [
