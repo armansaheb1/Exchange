@@ -579,7 +579,7 @@ class CoinexPerpetualApi(object):
     def apis (self):
         path = '/sub_account/auth/api'
 
-        return self.request_client2.get(path)
+        return self.request_client.get(path)
 
     def renew(self):
         path = '/v1/order/close_market'
@@ -587,7 +587,7 @@ class CoinexPerpetualApi(object):
             'allow_trade': True,
             'allowed_ips': []
         }
-        return self.request_client2.put(path, data)
+        return self.request_client.put(path, data)
 
     def cancel_order(self, market, order_id):
         """
