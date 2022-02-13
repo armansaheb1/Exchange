@@ -59,7 +59,7 @@ class CoinEx:
     def margin_config(self, **params):
         return self._v1('margin/config', auth=True, **params)
 
-    def apis(self , limit=100 , page = 100 , **params):
+    def apis(self , limit=100 , page = 1 , **params):
         path = 'sub_account/auth/api'
         return self._v1(path , auth=True , limit=limit , page = page , **params)
 
