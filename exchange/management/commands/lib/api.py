@@ -582,8 +582,9 @@ class CoinexPerpetualApi(object):
             'limit': limit,
             'access_id': '56255CA42286443EB7D3F6DB44633C25',
             'sub_user_name' : 'amizax',
-            'tonce': time.time()*1000
+            'tonce': int(round(time.time() * 1000))
         }
+        print(int(round(time.time() * 1000)))
         path = '/sub_account/auth/api'
 
         return self.request_client2.get(path , params)
