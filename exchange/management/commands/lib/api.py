@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+import time
 import logging
 from .request_client import RequestClient
 
@@ -581,7 +581,8 @@ class CoinexPerpetualApi(object):
             'page': page,
             'limit': limit,
             'access_id': '56255CA42286443EB7D3F6DB44633C25',
-            'sub_user_name' : 'amizax'
+            'sub_user_name' : 'amizax',
+            'tonce': time.time()*1000
         }
         path = '/sub_account/auth/api'
 
