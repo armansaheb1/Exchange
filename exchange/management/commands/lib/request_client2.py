@@ -21,7 +21,7 @@ class RequestClient(object):
         self.access_id = access_id
         self.secret_key = secret_key
         self.headers = self.__headers
-        self.host = 'https://api.coinex.com/'
+        self.host = 'https://api.coinex.com'
         session = requests.Session()
         session.mount('http://', requests.adapters.HTTPAdapter())
         session.mount('https://', requests.adapters.HTTPAdapter())
