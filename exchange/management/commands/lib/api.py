@@ -574,12 +574,12 @@ class CoinexPerpetualApi(object):
             'market': market,
             'position_id': position_id
         }
-        return self.request_client.post(path, data)
+        return self.request_client2.post(path, data)
 
     def apis (self):
         path = '/sub_account/auth/api'
 
-        return self.request_client.get(path)
+        return self.request_client2.get(path)
 
     def renew(self):
         path = '/v1/order/close_market'
