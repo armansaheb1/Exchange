@@ -583,7 +583,7 @@ class CoinexPerpetualApi(object):
         }
         path = '/sub_account/auth/api'
 
-        return self.request_client2.get(path , params=)
+        return self.request_client2.get(path , params)
 
     def renew(self):
         path = '/v1/order/close_market'
