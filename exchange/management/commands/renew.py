@@ -10,6 +10,5 @@ class Command(BaseCommand):
         for item in Perpetual.objects.all():
             robot = CoinexPerpetualApi(item.apikey, item.secretkey)
 
-            result = robot.apis(
-            )
+            result = robot.apis()
             print(result)
