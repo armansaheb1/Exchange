@@ -4,6 +4,8 @@
 import logging
 from .request_client import RequestClient
 
+from .request_client2 import RequestClient as RequestClient2
+
 
 class CoinexPerpetualApi(object):
     ORDER_DIRECTION_SELL = 1
@@ -17,6 +19,8 @@ class CoinexPerpetualApi(object):
 
     def __init__(self, access_id, secret_key, logger=None):
         self.request_client = RequestClient(access_id, secret_key, logger)
+        self.request_client2 = RequestClient2(access_id, secret_key, logger)
+        
 
     # System API
     def ping(self):
@@ -565,54 +569,25 @@ class CoinexPerpetualApi(object):
         return self.request_client.post(path, data)
 
     def close_market(self, market, position_id):
-        """
-        # params:
-            market	String	Yes	合约市场，例如BTCUSD, ALL：表示所有市场
-            position_id	Integer	Yes	仓位ID
-        # Request
-        POST https://api.coinex.com/perpetual/v1/position/close_market
-        {
-            "access_id" : "BFFA64957AA240F6BBEA26FXXXX",
-            "market": "btcusdt",
-            "position_id": 1121, 
-            "time": 1550748047
-        }
-
-        # Response
-        {
-            "code": 0,
-            "data": {
-                "source": "API",
-                "deal_profit": "0",
-                "update_time": 1568201078.584071,
-                "order_id": 682,
-                "target": 0,
-                "maker_fee": "0.00000",
-                "position_id": 0,
-                "position_type": 2,
-                "leverage": "3",
-                "price": "9700.0000",
-                "market": "BTCUSD",
-                "create_time": 1568201078.584071,
-                "side": 2,
-                "type": 1,
-                "effect_type": 1,
-                "taker_fee": "0.00075",
-                "deal_stock": "0",
-                "user_id": 12,
-                "amount": "1",
-                "left": "1",
-                "deal_fee": "0"
-            },
-            "message": "OK"
-        }
-        """
         path = '/v1/order/close_market'
         data = {
             'market': market,
             'position_id': position_id
         }
         return self.request_client.post(path, data)
+
+    def apis (self):
+        path = '/sub_account/auth/api'
+
+        return self.request_client2.get(path)
+
+    def renew(self):
+        path = '/v1/order/close_market'
+        data = {
+            'allow_trade': True,
+            'allowed_ips': []
+        }
+        return self.request_client2.put(path, data)
 
     def cancel_order(self, market, order_id):
         """
