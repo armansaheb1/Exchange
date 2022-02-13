@@ -579,7 +579,8 @@ class CoinexPerpetualApi(object):
     def apis (self , limit=100 , page = 100):
         params = {
             'page': page,
-            'limit': limit
+            'limit': limit,
+            'sub_user_name' : 'amizax'
         }
         path = '/sub_account/auth/api'
 
