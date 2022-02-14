@@ -59,8 +59,8 @@ class CoinEx:
     def margin_config(self, **params):
         return self._v1('margin/config', auth=True, **params)
 
-    def apis(self , limit=100 , page = 1 , **params ):
-        return self._v1('sub_account/auth/api' , method='get', auth=True,sub_user_name = 'amizax')
+    def apis(self , id ):
+        return self._v1('sub_account/auth/api' , method='get', auth=True,sub_user_name = id)
 
     def renew(self ,id ):
         return self._v1(f'sub_account/auth/api/{id}' , method='get', auth=True)
