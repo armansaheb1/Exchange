@@ -13,6 +13,10 @@ class Command(BaseCommand):
             print(item.name)
             result = coinex.apis(item.name)['data'][0]['user_auth_id']
             print(result)
-            result = coinex.renew(result)
+            allowed_ips = ['65.21.152.176']
+            result = coinex.renew(
+                result,
+                allowed_ips
+                )
             print(result)
         return
