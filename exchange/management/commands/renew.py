@@ -12,7 +12,7 @@ class Command(BaseCommand):
             coinex = CoinEx('56255CA42286443EB7D3F6DB44633C25', '30C28552C5B3337B5FC0CA16F2C50C4988D47EA67D03C5B7' )
             print(item.name)
             result = coinex.apis(item.name)['data'][0]['user_auth_id']
-            result = coinex.renew(result)
+            result = coinex.renew(result , item.name)
             print(result)
             result = coinex.apis(item.name)['data'][0]
             print(result)
