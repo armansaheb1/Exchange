@@ -176,6 +176,8 @@ class CoinEx:
 
         if method == 'post':
             resp = requests.post('https://api.coinex.com/v1/' + path, json=params, headers=headers)
+        elif method == 'put':
+            resp = requests.put('https://api.coinex.com/v1/' + path, json=params, headers=headers)
         else:
             fn = getattr(requests, method)
             resp = fn('https://api.coinex.com/v1/' + path, params=params, headers=headers)
