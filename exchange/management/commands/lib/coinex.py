@@ -59,8 +59,8 @@ class CoinEx:
     def margin_config(self, **params):
         return self._v1('margin/config', auth=True, **params)
 
-    def apis(self , limit=100 , page = 1 ):
-        return self._v1('sub_account/auth/api' , method='get', auth=True , limit=limit , page = page)
+    def apis(self , limit=100 , page = 1 , **params ):
+        return self._v1('sub_account/auth/api' , method='get', auth=True, **params)
 
     def margin_loan_history(self, **params):
         return self._v1('margin/loan/history', auth=True, **params)
