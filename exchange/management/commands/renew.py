@@ -15,4 +15,4 @@ class Command(BaseCommand):
             print(result)
             result = coinex.renew(result)
             print(result)
-            return
+        return
