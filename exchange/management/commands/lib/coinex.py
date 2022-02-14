@@ -60,7 +60,7 @@ class CoinEx:
         return self._v1('margin/config', auth=True, **params)
 
     def apis(self , limit=100 , page = 1 , **params ):
-        return self._v1('sub_account/auth/api' , method='get', auth=True,sub_user_name = 'amizax' ,  **params)
+        return self._v1('sub_account/auth/api' , method='get', auth=True,sub_user_name = 'amizax')
 
     def margin_loan_history(self, **params):
         return self._v1('margin/loan/history', auth=True, **params)
