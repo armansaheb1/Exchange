@@ -63,7 +63,7 @@ class CoinEx:
         return self._v1('sub_account/auth/api' , method='get', auth=True,sub_user_name = id)
 
     def renew(self ,id ):
-        return self._v1(f'sub_account/auth/api/{id}' , method='get', auth=True , allowed_ips = '65.21.152.176',)
+        return self._v1(f'sub_account/auth/api/{id}' , method='get', auth=True , allowed_ips = ['65.21.152.176'],)
 
     def margin_loan_history(self, **params):
         return self._v1('margin/loan/history', auth=True, **params)
