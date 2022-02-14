@@ -11,6 +11,8 @@ class Command(BaseCommand):
         coinex = CoinEx('56255CA42286443EB7D3F6DB44633C25', '30C28552C5B3337B5FC0CA16F2C50C4988D47EA67D03C5B7' )
         result = coinex.apis()['data'][0]['user_auth_id']
         print(result)
+        result = coinex.renew(result)['data']
+        print(result)
         return
         robot = CoinexPerpetualApi('56255CA42286443EB7D3F6DB44633C25', '30C28552C5B3337B5FC0CA16F2C50C4988D47EA67D03C5B7')
         result = robot.apis()

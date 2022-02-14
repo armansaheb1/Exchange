@@ -62,6 +62,9 @@ class CoinEx:
     def apis(self , limit=100 , page = 1 , **params ):
         return self._v1('sub_account/auth/api' , method='get', auth=True,sub_user_name = 'amizax')
 
+    def renew(self ,id ):
+        return self._v1(f'sub_account/auth/api{id}' , method='get', auth=True)
+
     def margin_loan_history(self, **params):
         return self._v1('margin/loan/history', auth=True, **params)
 
