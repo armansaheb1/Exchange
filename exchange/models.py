@@ -1,4 +1,3 @@
-from tkinter.tix import REAL
 from typing import Text
 from django.db import models
 from io import BytesIO
