@@ -1,3 +1,4 @@
+from tkinter.tix import REAL
 from typing import Text
 from django.db import models
 from io import BytesIO
@@ -1333,3 +1334,43 @@ class News(models.Model):
 
     def get_image(self):
         return f'{ROOT}/media/{self.img}'
+
+
+# Sticking
+
+
+class Plans(models.Model):
+    title = models.CharField(max_length=100)
+    currency = models.ForeignKey(Cp_Currencies, related_name='plans', on_delete=models.CASCADE)
+    des = models.TextField(max_length=10000)
+    percent = models.FloatField(null=True)
+    mini = models.FloatField(null=True)
+    maxi = models.FloatField(null=True)
+    period = models.CharField(null=True , max_length=100)
+    
+    def __str__(self):
+        return f"{self.title} ({self.id})"
+        
+    class Meta:
+        verbose_name = 'پلن ها'
+        verbose_name_plural = 'پلن ها'
+
+
+class UserPlans(models.Model):
+    user = models.ForeignKey(User , related_name='userplans' , on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plans , related_name='plan' , on_delete=models.CASCADE)
+    deposit = models.FloatField() 
+    option = models.CharField(max_length=100, null=True)
+    date_field = models.DateField(default=timezone.now)
+    def __str__(self):
+        return f"{self.userid}   ,   {self.planid}   ,   {self.deposit}   ,   {self.date_field}"
+
+class PlanProfitList(models.Model):
+    user = models.ForeignKey(User , related_name='userplans' , on_delete=models.CASCADE)
+    date = models.DateField(default=timezone.now) 
+    currency = models.ForeignKey(Cp_Currencies, related_name='plans', on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plans , related_name='plan' , on_delete=models.CASCADE)
+    amount = models.FloatField()
+    def __str__(self):
+        return f"{self.userid}{self.invid}"
+    
