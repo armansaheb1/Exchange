@@ -330,8 +330,8 @@ class send_request(APIView):
                     "content-type": "application/json'"}
         req = requests.post(url=ZP_API_REQUEST, data=json.dumps(
             req_data), headers=req_header)
+        authority = req.json()['data']['authority']
         if len(req.json()['errors']) == 0:
-            authority = req.json()['data']['authority']
             return HttpResponse(ZP_API_STARTPAY.format(authority=authority))
         else:
             e_code = req.json()['errors']['code']
