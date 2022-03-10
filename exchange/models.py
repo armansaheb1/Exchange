@@ -1356,7 +1356,7 @@ class Plans(models.Model):
 
 
 class UserPlans(models.Model):
-    user = models.ForeignKey(User , related_name='userplans' , on_delete=models.CASCADE)
+    user = models.ForeignKey(User , related_name='userplanssss' , on_delete=models.CASCADE)
     plan = models.ForeignKey(Plans , related_name='plan' , on_delete=models.CASCADE)
     deposit = models.FloatField() 
     option = models.CharField(max_length=100, null=True)
