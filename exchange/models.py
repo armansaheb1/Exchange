@@ -1367,8 +1367,8 @@ class UserPlans(models.Model):
 class PlanProfitList(models.Model):
     user = models.ForeignKey(User , related_name='userplans' , on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now) 
-    currency = models.ForeignKey(Cp_Currencies, related_name='userplans', on_delete=models.CASCADE)
-    plan = models.ForeignKey(Plans , related_name='userplans' , on_delete=models.CASCADE)
+    currency = models.ForeignKey(Cp_Currencies, related_name='userplanss', on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plans , related_name='userplansss' , on_delete=models.CASCADE)
     amount = models.FloatField()
     def __str__(self):
         return f"{self.userid}{self.invid}"
