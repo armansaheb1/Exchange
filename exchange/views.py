@@ -150,11 +150,11 @@ class login(APIView):
                                 Res = {"data": data, "auth_token": token}
                                 if len(UserInfo.objects.filter(user = User.objects.get(username = reqBody['username'])))>0:
                                     if UserInfo.objects.get(user = User.objects.get(username = reqBody['username'])).mobile:
-                                        notification(user = User.objects.get(username = reqBody['username']), title='Amizax', text = 'با موفقیت به حساب خود وارد شدید' ,  pattern='gf9zbtg61v')
+                                        notification(user = User.objects.get(username = reqBody['username']), title='Title', text = 'با موفقیت به حساب خود وارد شدید' ,  pattern='gf9zbtg61v')
                                 if len(UserInfo.objects.filter(user = User.objects.get(username = reqBody['username'])))<1:
                                     ui = UserInfo(user = User.objects.get(username = reqBody['username']),first_name='',last_name='')
                                     ui.save()
-                                    notification(user = User.objects.get(username = reqBody['username']), title='Amizax', text = 'با موفقیت به حساب خود وارد شدید' , pattern='gf9zbtg61v')
+                                    notification(user = User.objects.get(username = reqBody['username']), title='Title', text = 'با موفقیت به حساب خود وارد شدید' , pattern='gf9zbtg61v')
                                 use = UserInfo.objects.get(user=Account)
                                 use.last_visit=timezone.now()
                                 use.save()
@@ -211,11 +211,11 @@ class login(APIView):
                             Res = {"data": data, "auth_token": token}
                             if len(UserInfo.objects.filter(user = User.objects.get(username = reqBody['username'])))>0:
                                 if UserInfo.objects.get(user = User.objects.get(username = reqBody['username'])).mobile:
-                                    notification(user = User.objects.get(username = reqBody['username']), title='Amizax',text = 'با موفقیت به حساب خود وارد شدید', pattern='gf9zbtg61v')
+                                    notification(user = User.objects.get(username = reqBody['username']), title='Title',text = 'با موفقیت به حساب خود وارد شدید', pattern='gf9zbtg61v')
                             if len(UserInfo.objects.filter(user = User.objects.get(username = reqBody['username'])))<1:
                                 ui = UserInfo(user = User.objects.get(username = reqBody['username']),first_name='',last_name='')
                                 ui.save()
-                                notification(user = User.objects.get(username = reqBody['username']), title='Amizax',text = 'با موفقیت به حساب خود وارد شدید', pattern='gf9zbtg61v')
+                                notification(user = User.objects.get(username = reqBody['username']), title='Title',text = 'با موفقیت به حساب خود وارد شدید', pattern='gf9zbtg61v')
                             use = UserInfo.objects.get(user=Account)
                             use.last_visit=timezone.now()
                             use.save()
@@ -250,11 +250,11 @@ class login(APIView):
                         Res = {"data": data, "auth_token": token}
                         if len(UserInfo.objects.filter(user = User.objects.get(username = reqBody['username'])))>0:
                             if UserInfo.objects.get(user = User.objects.get(username = reqBody['username'])).mobile:
-                                notification(user = User.objects.get(username = reqBody['username']), title='Amizax',text = 'با موفقیت به حساب خود وارد شدید', pattern='gf9zbtg61v')
+                                notification(user = User.objects.get(username = reqBody['username']), title='Title',text = 'با موفقیت به حساب خود وارد شدید', pattern='gf9zbtg61v')
                         if len(UserInfo.objects.filter(user = User.objects.get(username = reqBody['username'])))<1:
                             ui = UserInfo(user = User.objects.get(username = reqBody['username']),first_name='',last_name='',phone='')
                             ui.save()
-                            notification(user = User.objects.get(username = reqBody['username']), title='Amizax',text = 'با موفقیت به حساب خود وارد شدید', pattern='gf9zbtg61v')
+                            notification(user = User.objects.get(username = reqBody['username']), title='Title',text = 'با موفقیت به حساب خود وارد شدید', pattern='gf9zbtg61v')
                         use = UserInfo.objects.get(user=Account)
                         use.last_visit=timezone.now()
                         use.save()
@@ -290,7 +290,7 @@ class addreferal(APIView):
             return Response(status=status.HTTP_200_OK)
 class welcomesms(APIView):
     def get(self, request, format=None):
-            notification(user = request.user, title='Amizax', text='خود وارد شدید Amizax با موفقیت به حساب  ')
+            notification(user = request.user, title='Title', text='خود وارد شدید Title با موفقیت به حساب  ')
             return Response(status=status.HTTP_200_OK)
 
 
@@ -303,7 +303,7 @@ description = "توضیحات مربوط به تراکنش را در این قس
 email = 'email@example.com'  # Optional
 mobile = '09123456789'  # Optional
 # Important: need to edit for realy server.
-CallbackURL = 'https://amizax.com/api/v1/verifys/'
+CallbackURL = 'https://Title.com/api/v1/verifys/'
 
 class send_request(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
@@ -337,7 +337,7 @@ class send_request2(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self , request , format=None):
-        CallbackURL2 = 'https://amizax.com/api/v1/buyappback/'
+        CallbackURL2 = 'https://Title.com/api/v1/buyappback/'
         uid = str(uuid.uuid4())
         amount = 0
         if int(request.data['option']) == 1:
@@ -393,7 +393,7 @@ def verifys(request, transid):
                     wa.save()
                 tra = Transactions(user = user, amount= transactioni.amount, act = 1, currency = Currencies.objects.get(id = 1))
                 tra.save()
-                return redirect('https://amizax.com/success')
+                return redirect('https://Title.com/success')
             elif t_status == 101:
                 return HttpResponse('Transaction submitted : ' + str(
                     req.json()['data']['message']
@@ -434,7 +434,7 @@ def buyappback(request, transid):
                 elif int(transactioni.amount) == 500000000:
                     type = 3
                 buyapp(user = user , type = type)
-                return redirect('https://amizax.com/success')
+                return redirect('https://Title.com/success')
             elif t_status == 101:
                 return HttpResponse('Transaction submitted : ' + str(
                     req.json()['data']['message']
@@ -473,7 +473,7 @@ class rulev(APIView):
             per = UserInfo.objects.get(user = request.user)
             per.level = 1
             per.save()
-            notification(user = request.user ,title='Amizax',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
+            notification(user = request.user ,title='Title',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
         return Response(status=status.HTTP_201_CREATED)
 
 class general(APIView):
@@ -497,7 +497,7 @@ class usersinfo(APIView):
 
     def get(self , request , format=None):
         if len(Notification.objects.filter(user = request.user)) < 1 : 
-            note = Notification(user = request.user , title = 'خوش آمدید' , text = 'به AMIZAX خوش آمدید') 
+            note = Notification(user = request.user , title = 'خوش آمدید' , text = 'به Title خوش آمدید') 
             note.save()
         userinfo =  self.get_object(request.user)
         serializer = UserInfoSerializer(userinfo , many=True)
@@ -515,7 +515,7 @@ class usersinfo(APIView):
                 per = UserInfo.objects.get(user = request.user)
                 per.level = 1
                 per.save()
-            notification(user = request.user ,title='Amizax',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
+            notification(user = request.user ,title='Title',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
             note = Notification(user = request.user , title = ' اطلاعات شما با موفقیت ثبت شد' , text = 'برای شروع معاملات لطفا احراز هویت را انجام دهید') 
             note.save()
             return Response( status=status.HTTP_201_CREATED)
@@ -532,7 +532,7 @@ class usersinfo(APIView):
                 per = UserInfo.objects.get(user = request.user)
                 per.level = 1
                 per.save()
-                notification(user = request.user ,title='Amizax',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
+                notification(user = request.user ,title='Title',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
             return Response( status=status.HTTP_201_CREATED)
 
     def put(self, request , format=None):
@@ -1002,7 +1002,7 @@ class mobileverify(APIView):
                 per = UserInfo.objects.get(user = request.user)
                 per.level = 1
                 per.save()
-                notification(user = request.user ,title='Amizax',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
+                notification(user = request.user ,title='Title',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
             return Response(status=status.HTTP_200_OK)
         else:
             return Response({"error": "کد وارد شده معتبر نیست"} , status=status.HTTP_400_BAD_REQUEST)
@@ -1019,7 +1019,7 @@ class regemailverify(APIView):
         
         send_mail(
             'Subject here',
-            f'به شرکت سرمایه گذاری Amizax خوش آمدید کد فعالسازی : /n برای تایید حساب خود روی لینک زیر کلیک کنید /n https://www.amizax.com/api/v1/email/{vcode} ',
+            f'به شرکت سرمایه گذاری Title خوش آمدید کد فعالسازی : /n برای تایید حساب خود روی لینک زیر کلیک کنید /n https://www.Title.com/api/v1/email/{vcode} ',
             'info@ramabit.com',
             [f'{request.data["email"]}'],
             fail_silently=False,
@@ -1039,7 +1039,7 @@ class regemailverify(APIView):
                 per = UserInfo.objects.get(user = request.user)
                 per.level = 1
                 per.save()
-                notification(user = request.user ,title='Amizax',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
+                notification(user = request.user ,title='Title',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
             return Response(status=status.HTTP_200_OK)
         else:
             return Response({"error": "کد وارد شده معتبر نیست"} , status=status.HTTP_400_BAD_REQUEST)
@@ -1057,7 +1057,7 @@ class emailverify(APIView):
         
         send_mail(
             'Subject here',
-            f'به شرکت سرمایه گذاری Amizax خوش آمدید کد فعالسازی : {vcode} ',
+            f'به شرکت سرمایه گذاری Title خوش آمدید کد فعالسازی : {vcode} ',
             'info@ramabit.com',
             [f'{request.data["email"]}'],
             fail_silently=False,
@@ -1077,7 +1077,7 @@ class emailverify(APIView):
                 per = UserInfo.objects.get(user = request.user)
                 per.level = 1
                 per.save()
-                notification(user = request.user ,title='Amizax',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
+                notification(user = request.user ,title='Title',text='حساب شما با موفقیت تایید شد',date= datetime.now() , pattern= 'qiep09qzea')
             return Response(status=status.HTTP_200_OK)
         else:
             return Response({"error": "کد وارد شده معتبر نیست"} , status=status.HTTP_400_BAD_REQUEST)
