@@ -17,6 +17,7 @@ urlpatterns = [
    path('cp_depositreject' , views.cp_depositreject.as_view() , name='cp_depositreject'),
    path('withdraw' , views.withdraw.as_view() , name='withdraw'),
    path('withdraw/<int:id>' , views.withdraw.as_view() , name='withdraw'),
+   path('transfer' , views.transfer.as_view() , name='transfer'),
    path('buyout' , views.buyout.as_view() , name='buyout'),
    path('sell' , views.sell.as_view() , name='sell'),
    path('sellout' , views.sellout.as_view() , name='sellout'),

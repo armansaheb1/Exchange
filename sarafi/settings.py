@@ -15,7 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ROOT = 'https://amizax.com'
+ROOT = 'http://49.12.106.65'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ra$$l%4d2y4i!5#=(n58_u988+gdn8$st2^rtx-l0buiwhi7kc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['amizax.com', 'www.amizax.com' , 'arsdev.ir', 'www.arsdev.ir']
+ALLOWED_HOSTS = ['49.12.106.65']
 
 
 # Application definition
@@ -44,24 +44,14 @@ INSTALLED_APPS = [
     'djoser',
     'exchange',
     'adminpanel',
-    'bitcoinlib',
-    'bitmerchant',
-    'py_crypto_hd_wallet',
     'jsonfield',
     'coinbase',
     'ippanel',
-    'bit',
-    'web3',
-    'tronapi',
-    'tronpy',
-    'cryptos',
-    'blockcypher',
     'binance_chain',
     'django_rest_passwordreset',
     'django_crontab',
     'websockets',
     'chat',
-    'infura',
     'pyotp',
     'django_otp',
     'django_otp.plugins.otp_totp'
@@ -74,7 +64,9 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.arsdesign.ir",
     "http://arsdesign.ir",
     "http://www.arsdesign.ir",
-    "http://localhost:8080"
+    "http://localhost:8080",
+    'http://49.12.106.65',
+    'http://localhost:8080'
 ]
 
 MIDDLEWARE = [
@@ -125,22 +117,31 @@ DATABASES = {
 }
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "root": {"level": "INFO", "handlers": ["file"]},
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "/Exchange/django.log",
+            "formatter": "app",
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'WARNING',
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True
+        },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': False,
+    "formatters": {
+        "app": {
+            "format": (
+                u"%(asctime)s [%(levelname)-8s] "
+                "(%(module)s.%(funcName)s) %(message)s"
+            ),
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
 }

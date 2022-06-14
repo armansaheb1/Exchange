@@ -59,17 +59,14 @@ class CoinEx:
     def margin_config(self, **params):
         return self._v1('margin/config', auth=True, **params)
 
-    def apis(self , id ):
-        return self._v1('sub_account/auth/api' , method='get', auth=True,sub_user_name = id)
-
-    def renew(self ,id ,name):
-        return self._v1(f'sub_account/auth/api/{id}' , method='put', auth=True , sub_user_name = name,  allow_trade = True , allowed_ips = [] )
-
     def margin_loan_history(self, **params):
         return self._v1('margin/loan/history', auth=True, **params)
 
     def margin_loan(self, market, coin_type, amount):
         return self._v1('margin/loan', method='post', auth=True, market=market, coin_type=coin_type, amount=amount)
+
+    def margin_loan_get(self, account_id):
+        return self._res(f'margin/loan?account_id={account_id}', method='get', auth=True)
 
     def margin_flat(self, market, coin_type, amount, **params):
         return self._v1('margin/flat', method='post', auth=True, market=market, coin_type=coin_type, amount=amount, **params)
@@ -92,7 +89,7 @@ class CoinEx:
     def balance_coin_withdraw_list(self, **params):
         return self._v1('balance/coin/withdraw', auth=True, **params)
 
-    def balance_coin_withdraw(self, coin_type, coin_address, actual_amount, transfer_method, **params):
+    def balance_coin_withdraw(self, coin_type, coin_address, actual_amount, transfer_method, smart_contract_name, **params):
         return self._v1('balance/coin/withdraw', method='post', auth=True, coin_type=coin_type, coin_address=coin_address, actual_amount=actual_amount, transfer_method=transfer_method, **params)
 
     def balance_coin_withdraw_cancel(self, coin_withdraw_id, **params):
@@ -110,8 +107,9 @@ class CoinEx:
     def sub_account_transfer(self, coin_type, amount, **params):
         return self._v1('sub_account/transfer', method='post', auth=True, coin_type=coin_type, amount=amount, **params)
 
-    def sub_account_transfer_history(self, coin_type, **params):
-        return self._v1('sub_account/transfer/history', method='get', auth=True, coin_type=coin_type, **params)
+    def sub_account_transfer_history(self, sub_user_name , **params):
+        return self._v1('sub_account/transfer/history', method='get', auth=True, page=1,limit=10,sub_user_name= sub_user_name, **params)
+
 
     def order_limit(self, market, type, amount, price, **params):
         return self._v1('order/limit', method='post', auth=True, market=market, type=type, amount=amount, price=price, **params)
@@ -150,8 +148,8 @@ class CoinEx:
     def order_pending_cancel(self, market, id):
         return self._v1('order/pending', method='delete', auth=True, market=market, id=id)
     
-    def order_stop_pending_cancel(self, market, account_id, id):
-        return self._v1('order/stop/pending', method='delete', auth=True, market=market, account_id=account_id, id=id)
+    def order_stop_pending_cancel(self, market, id):
+        return self._v1(f'order/stop/pending/{id}', method='delete', auth=True, market=market, id=id)
 
     def order_pending_cancel_all(self, account_id, market):
         return self._v1('order/pending', method='delete', auth=True, account_id=account_id, market=market)
@@ -176,11 +174,32 @@ class CoinEx:
 
         if method == 'post':
             resp = requests.post('https://api.coinex.com/v1/' + path, json=params, headers=headers)
-        elif method == 'put':
-            resp = requests.put('https://api.coinex.com/v1/' + path, json=params, headers=headers)
         else:
             fn = getattr(requests, method)
             resp = fn('https://api.coinex.com/v1/' + path, params=params, headers=headers)
+
+        return self._process_response(resp)
+
+    def _res(self, path, method='get', auth=False, **params):
+        headers = dict(self._headers)
+
+        if auth:
+            if not self._access_id or not self._secret:
+                raise CoinExApiError('API keys not configured')
+
+            params.update(access_id=self._access_id)
+            params.update(tonce=int(time.time() * 1000))
+
+        params = collections.OrderedDict(sorted(params.items()))
+
+        if auth:
+            headers.update(Authorization=self._sign(params))
+
+        if method == 'post':
+            resp = requests.post('https://api.coinex.com/res/' + path, json=params, headers=headers)
+        else:
+            fn = getattr(requests, method)
+            resp = fn('https://api.coinex.com/res/' + path, params=params, headers=headers)
 
         return self._process_response(resp)
 
@@ -189,8 +208,7 @@ class CoinEx:
 
         data = resp.json()
         if data['code'] is not 0:
-            raise CoinExApiError(data['message'])
-
+            return data['message']
         return data['data']
 
     def _sign(self, params):

@@ -1,7 +1,7 @@
 from chat.models import ChatSession
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import  BottomSticker, Cp_Currencies, Cp_Wallet, Cp_Withdraw, CpDepositRequest, General, LevelFee, Leverage, MainTradesBuyOrder, MainTradesSellOrder, News, PerpetualRequest, Posts, ProTradesBuyOrder, ProTradesSellOrder , ProTrades , MainTrades, Notification, ProfitList, TopSticker, VerifyAcceptRequest , VerifyMelliRequest , BankAccounts , VerifyBankAccountsRequest , Price , Currencies, Forgetrequest, UserInfo, Wallet, Verify, BankCards, Transactions, Settings , Subjects , Tickets, Pages, VerifyBankRequest, Staff, WithdrawRequest, buyoutrequest, buyrequest, exchangerequest, selloutrequest, sellrequest
+from .models import  BottomSticker, Cp_Currencies, Cp_Wallet, Cp_Withdraw, CpDepositRequest, General, LevelFee, Leverage, MainTradesBuyOrder, MainTradesSellOrder, News, PerpetualRequest, Posts, ProTradesBuyOrder, ProTradesSellOrder , ProTrades , MainTrades, Notification, ProfitList, TopSticker, Transfer, VerifyAcceptRequest , VerifyMelliRequest , BankAccounts , VerifyBankAccountsRequest , Price , Currencies, Forgetrequest, UserInfo, Wallet, Verify, BankCards, Transactions, Settings , Subjects , Tickets, Pages, VerifyBankRequest, Staff, WithdrawRequest, buyoutrequest, buyrequest, exchangerequest, selloutrequest, sellrequest
 
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -140,6 +140,19 @@ class CpWalletSerializer(serializers.ModelSerializer):
             "id",
             "currency",
             "address",
+        )
+
+class TransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transfer
+        fields = (
+            "id",
+            "user",
+            "coin",
+            "amount",
+            "get_age",
+            "get_user",
+            "market"
         )
 
 class CpDepositRequestSerializer(serializers.ModelSerializer):

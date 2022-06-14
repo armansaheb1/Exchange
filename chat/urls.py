@@ -8,6 +8,7 @@ urlpatterns = [
     path('chats/user', views.user.as_view()),
     path('chats/<uri>/', views.ChatSessionView.as_view()),
     path('chats/<uri>/messages/', views.ChatSessionMessageView.as_view()),
+    path('chats/<uri>/adminmessages/', views.ChatSessionMessageViewAdmin.as_view()),
     path('chats/<uri>/seen/', views.seen.as_view()),
     path('chats/adminchat', views.adminchat.as_view()),
 ]

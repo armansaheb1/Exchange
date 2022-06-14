@@ -14,16 +14,15 @@ from rest_framework import request, serializers
 from django.http import HttpResponse , Http404 
 from rest_framework import status
 from rest_framework import authentication
-from exchange.serializers import  BottomStickerSerializer, BuySerializer, BuyoutSerializer, Cp_WithdrawSerializer, CpDepositRequestSerializer, CpWalletSerializer, ExchangeSerializer, GeneralSerializer, LevelFeeSerializer, PerpetualRequestSerializer, PostsSerializer, ProfitSerializer, SellSerializer, TopStickerSerializer, VerifyAcceptRequestSerializer, VerifyMelliRequest , BankAccountsSerializer, StaffSerializer, UserInfoSerializer, VerifyBankAccountsRequestSerializer, VerifyMelliRequestSerializer , WalletSerializer , CurrenciesSerializer ,VerifySerializer, BankCardsSerializer, TransactionsSerializer, SettingsSerializer, SubjectsSerializer, TicketsSerializer, PagesSerializer , UserSerializer , ForgetSerializer, VerifyBankRequestSerializer, WithdrawSerializer, selloutSerializer
+from exchange.serializers import  BottomStickerSerializer, BuySerializer, BuyoutSerializer, Cp_WithdrawSerializer, CpDepositRequestSerializer, CpWalletSerializer, ExchangeSerializer, GeneralSerializer, LevelFeeSerializer, PerpetualRequestSerializer, PostsSerializer, ProfitSerializer, SellSerializer, TopStickerSerializer, TransferSerializer, VerifyAcceptRequestSerializer, VerifyMelliRequest , BankAccountsSerializer, StaffSerializer, UserInfoSerializer, VerifyBankAccountsRequestSerializer, VerifyMelliRequestSerializer , WalletSerializer , CurrenciesSerializer ,VerifySerializer, BankCardsSerializer, TransactionsSerializer, SettingsSerializer, SubjectsSerializer, TicketsSerializer, PagesSerializer , UserSerializer , ForgetSerializer, VerifyBankRequestSerializer, WithdrawSerializer, selloutSerializer
 from rest_framework.views import APIView 
 from rest_framework.response import Response
-from exchange.models import BottomSticker, Cp_Currencies, Cp_Wallet, Cp_Withdraw, CpDepositRequest, General, LevelFee, News, Notification, Perpetual, PerpetualRequest, Posts ,  Price, ProfitList, Review, Staff, TopSticker,  UserInfo , Currencies, VerifyAcceptRequest, VerifyBankAccountsRequest, VerifyBankRequest, VerifyMelliRequest , Wallet , Verify , BankCards, Transactions, Settings, Subjects, Tickets, Pages , Forgetrequest, WithdrawRequest, buyoutrequest, buyrequest, exchangerequest, selloutrequest, sellrequest
+from exchange.models import BottomSticker, Cp_Currencies, Cp_Wallet, Cp_Withdraw, CpDepositRequest, General, LevelFee, News, Notification, Perpetual, PerpetualRequest, Posts ,  Price, ProfitList, Review, Staff, TopSticker, Transfer,  UserInfo , Currencies, VerifyAcceptRequest, VerifyBankAccountsRequest, VerifyBankRequest, VerifyMelliRequest , Wallet , Verify , BankCards, Transactions, Settings, Subjects, Tickets, Pages , Forgetrequest, WithdrawRequest, buyoutrequest, buyrequest, exchangerequest, selloutrequest, sellrequest
 from django.contrib.auth.models import AbstractUser , User
 from django.contrib.auth.decorators import user_passes_test
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
-from py_crypto_hd_wallet import HdWalletFactory, HdWalletCoins, HdWalletSpecs , HdWalletWordsNum
 import json as jj
 from datetime import datetime ,timedelta
 from django.contrib.auth.hashers import make_password
@@ -970,6 +969,40 @@ class buy(APIView):
         profit.save()
         note = Notification(user=req.user, title = 'خرید موفق' , text = ' درخواست خرید شما با موفقیت انجام شد . ')
         note.save()
+        if len(Cp_Wallet.objects.filter(user = req.user , currency = req.currency)):
+            wal = Cp_Wallet.objects.get(user = req.user , currency = req.currency)
+            wal.balance = wal.balance + req.camount
+            wal.save()
+        else :
+            wal = Cp_Wallet(user = req.user , currency = req.currency, balance = req.camount)
+            wal.save()
+        req.act = 2
+        req.save()
+        return Response( status=status.HTTP_201_CREATED)
+
+class transfer(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
+    permission_classes = [IsAuthenticated]
+    
+    def get_object(self, user):
+        return Transfer.objects.filter(act = 0).order_by('-date')
+
+    def get(self , request, format=None):
+        maintrade =  self.get_object(request.user)
+        serializer = TransferSerializer(maintrade , many=True)
+        return Response(serializer.data , status=status.HTTP_201_CREATED)
+
+    def post(self , request, format=None):
+        if request.data['act'] == 'reject':
+            req = Transfer.objects.get(id = request.data['id'])
+            note = Notification(user=req.user, title = 'انتقال نا موفق' , text = 'متاسفانه درخواست انتقال شما با مشکل مواجه شده . لطفا با پشتیبانی تماس بگیرید')
+            note.save()
+            req.act = 1
+            req.save()
+            return Response(status=status.HTTP_201_CREATED)
+        req = Transfer.objects.get(id = request.data['id'])
+        note = Notification(user=req.user, title = 'انتقال موفق' , text = ' درخواست انتقال شما با موفقیت انجام شد . ')
+        note.save()
         req.act = 2
         req.save()
         return Response( status=status.HTTP_201_CREATED)
@@ -997,6 +1030,17 @@ class exchange(APIView):
         req = exchangerequest.objects.get(id = request.data['id'])
         note = Notification(user=req.user, title = 'اکسچینج موفق' , text = ' درخواست اکسچینج شما با موفقیت انجام شد . ')
         note.save()
+        wal1 = Cp_Wallet.objects.filter(user = req.user , currency = req.currency)
+        if wal1.balance < req.camount :
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        wal1.balance = wal1.balance - req.camount
+        if len(Cp_Wallet.objects.filter(user = req.user , currency = req.currency2)):
+            wal = Cp_Wallet.objects.get(user = req.user , currency = req.currency2)
+            wal.balance = wal.balance + req.camount2
+            wal.save()
+        else :
+            wal = Cp_Wallet(user = req.user , currency = req.currency2, balance = req.camount2)
+            wal.save()
         req.act = 2
         req.save()
         return Response( status=status.HTTP_201_CREATED)
@@ -1045,6 +1089,13 @@ class cp_deposit(APIView):
             req.act = 1
             req.save()
             return Response(status=status.HTTP_201_CREATED)
+        if len(Cp_Wallet.objects.get(user = request.user , currency = Cp_Currencies.objects.get(id = req.currency))):
+            wallet2 = Cp_Wallet.objects.get(user = request.user , currency = Cp_Currencies.objects.get(id = req.currency))
+            wallet2.balance = wallet2.balance + float(req.camount)
+            wallet2.save()
+        else:
+            wallet2 = Cp_Wallet(user = request.user , currency = Cp_Currencies.objects.get(id = request.data['currency']), balance = float(request.data['camount']))
+            wallet2.save()
         req = CpDepositRequest.objects.get(id = request.data['id'])
         note = Notification(user=req.user, title = 'شارژ حساب موفق' , text = ' درخواست شارژ حساب شما با موفقیت انجام شد . ')
         note.save()
@@ -1155,8 +1206,6 @@ class buyout(APIView):
             req.save()
             return Response(status=status.HTTP_201_CREATED)
         req = buyoutrequest.objects.get(id = request.data['id'])
-        profit = ProfitList(user = req.user , amount = (float(req.ramount) - float(request.data['rramount'])) , currency = 'ریال' , operation = f'{req.currency} خرید خارجی')
-        profit.save()
         note = Notification(user=req.user, title = 'خرید موفق' , text = ' درخواست خرید شما با موفقیت انجام شد . ')
         note.save()
         req.act = 2

@@ -47,6 +47,53 @@ class Referal(models.Model):
     inviter = models.IntegerField()
 
 
+class Transfer(models.Model):
+    user = models.ForeignKey(User , related_name='transfer', on_delete=models.CASCADE)
+    coin = models.CharField(max_length=100)
+    market = models.CharField(max_length=100 , null=True , blank=True)
+    amount = models.FloatField(null=True)
+    date = models.DateTimeField(default=timezone.now)
+    act = models.IntegerField(default=0)
+    def get_user(self):
+        return self.user.username
+    def get_age(self):
+        days=0
+        hours=0
+        minutes=0
+        dif = (timezone.now()- self.date).total_seconds()
+        while (dif > 86400):
+            dif = dif - 86400
+            days = days + 1
+        while (dif > 3600):
+            dif = dif - 3600
+            hours = hours + 1
+        while (dif > 60):
+            dif = dif - 60
+            minutes = minutes + 1
+
+
+        if hours > 0:
+            hours = f' {hours}  ساعت  و'
+        else:
+            hours = ''
+
+
+        if minutes > 0:
+            minutes = f' {minutes} دقیقه  '
+        else:
+            minutes = ''
+
+
+
+        if days > 0:
+            days = f'{days}  روز و '
+        else:
+            days = ''
+
+
+        return  days + hours + minutes
+
+
 class UserInfo(models.Model):
     user = models.OneToOneField(User , related_name='userinfo', on_delete=models.CASCADE)
     first_name=models.CharField(max_length=255)
@@ -527,8 +574,8 @@ class Cp_Currencies(models.Model):
 class Cp_Wallet(models.Model):
     user = models.ForeignKey(User , on_delete=models.CASCADE)
     currency = models.ForeignKey(Cp_Currencies , on_delete=models.CASCADE ,default=0)
-    address = models.CharField(max_length=1000 , null = True, blank=True)
-    
+    balance = models.FloatField()
+
     def get_currency(self) :
         return f'{self.currency.name}'
 
@@ -900,7 +947,7 @@ class Tickets(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now - self.date).total_seconds()
+        dif = (timezone.now() - self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -1048,7 +1095,7 @@ class Notification(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now - self.date).total_seconds()
+        dif = (timezone.now() - self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -1122,7 +1169,7 @@ class MainTradesBuyOrder(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now - self.date).total_seconds()
+        dif = (timezone.now() - self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -1171,7 +1218,7 @@ class MainTradesSellOrder(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now - self.date).total_seconds()
+        dif = (timezone.now() - self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -1218,7 +1265,7 @@ class ProTradesBuyOrder(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now - self.date).total_seconds()
+        dif = (timezone.now() - self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1
@@ -1264,7 +1311,7 @@ class ProTradesSellOrder(models.Model):
         days=0
         hours=0
         minutes=0
-        dif = (timezone.now - self.date).total_seconds()
+        dif = (timezone.now() - self.date).total_seconds()
         while (dif > 86400):
             dif = dif - 86400
             days = days + 1

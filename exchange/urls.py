@@ -45,6 +45,7 @@ urlpatterns = [
    path('bankrequests' , views.bankrequests.as_view() , name='bankrequests'),
    path('notifications' , views.notifications.as_view() , name='notifications'),
    path('subject' , views.subject.as_view() , name='subject'),
+   path('unread' , views.unread.as_view() , name='unread'),
    path('ticket/<int:id>' , views.ticket.as_view() , name='ticket'),
    path('ticket' , views.ticket.as_view() , name='ticket'),
    path('maintrades' , views.maintrades.as_view() , name='maintrades'),

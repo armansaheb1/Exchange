@@ -1,8 +1,8 @@
+from decimal import Decimal
 from requests.sessions import Request
 from django.contrib.auth.hashers import check_password
 from exchange.lib import request_client
 from django.core.exceptions import ValidationError
-from coinmarketcapapi import CoinMarketCapAPI, CoinMarketCapAPIError
 from typing import Text
 from django import http
 from django.http import response
@@ -10,10 +10,6 @@ import datetime
 import requests
 from .lib.request_client import RequestClient
 from .lib.coinex import CoinEx
-from .lib.TRON import Tron
-from .lib.BTC import BTC
-from .lib.ETH import ETH
-from bitmerchant.wallet import Wallet as Wall
 import time
 from django.db.models.fields import EmailField
 from django.http.response import JsonResponse
@@ -25,7 +21,7 @@ from rest_framework import authentication
 from .serializers import BottomStickerSerializer, BuySerializer, BuyoutSerializer, CpCurrenciesSerializer, CpDepositRequestSerializer, CpWalletSerializer, ExchangeSerializer, GeneralSerializer, LevelFeeSerializer, LeverageSerializer, NewsSerializer, PostsSerializer, ProTradesBuyOrderSerializer, ProTradesSellOrderSerializer , MainTradesBuyOrderSerializer, MainTradesSellOrderSerializer, ProTradesSerializer, MainTradesSerializer, NotificationSerializer, BankAccountsSerializer, SellSerializer, TopStickerSerializer, VerifyAcceptRequestSerializer, VerifyBankAccountsRequest , PriceSerializer , StaffSerializer, UserInfoSerializer, VerifyBankAccountsRequestSerializer, VerifyMelliRequestSerializer , WalletSerializer , CurrenciesSerializer ,VerifySerializer, BankCardsSerializer, TransactionsSerializer, SettingsSerializer, SubjectsSerializer, TicketsSerializer, PagesSerializer , UserSerializer , ForgetSerializer, VerifyBankRequestSerializer, WithdrawSerializer, selloutSerializer
 from rest_framework.views import APIView 
 from rest_framework.response import Response
-from .models import BottomSticker, General, Indexprice , Cp_Currencies, Cp_Wallet, Cp_Withdraw, LevelFee, Leverage, News, Perpetual, PerpetualRequest, Posts, PriceHistory, ProfitList, Referal, Review, SmsVerified, TopSticker, VerifyAcceptRequest, buyapp, buyoutrequest, buyrequest, exchangerequest, mobilecodes, ProTradesSellOrder, MainTradesSellOrder,ProTradesBuyOrder, MainTradesBuyOrder, ProTrades, MainTrades, Notification , VerifyBankAccountsRequest , BankAccounts, Price, Staff,  UserInfo , Currencies, VerifyMelliRequest , Wallet , Verify , BankCards, Transactions, Settings, Subjects, Tickets, Pages , Forgetrequest , VerifyBankRequest, selloutrequest, sellrequest, transactionid
+from .models import BottomSticker, General, Indexprice , Cp_Currencies, Cp_Wallet, Cp_Withdraw, LevelFee, Leverage, News, Perpetual, PerpetualRequest, Posts, PriceHistory, ProfitList, Referal, Review, SmsVerified, TopSticker, Transfer, VerifyAcceptRequest, buyapp, buyoutrequest, buyrequest, exchangerequest, mobilecodes, ProTradesSellOrder, MainTradesSellOrder,ProTradesBuyOrder, MainTradesBuyOrder, ProTrades, MainTrades, Notification , VerifyBankAccountsRequest , BankAccounts, Price, Staff,  UserInfo , Currencies, VerifyMelliRequest , Wallet , Verify , BankCards, Transactions, Settings, Subjects, Tickets, Pages , Forgetrequest , VerifyBankRequest, selloutrequest, sellrequest, transactionid
 from django.contrib.auth.models import AbstractUser , User, UserManager
 from django.contrib.auth.decorators import user_passes_test
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -33,7 +29,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 import uuid
-from py_crypto_hd_wallet import HdWalletFactory, HdWalletCoins, HdWalletSpecs , HdWalletWordsNum, HdWalletChanges
 import json
 from datetime import datetime ,timedelta
 from django.contrib.auth.hashers import make_password
@@ -44,7 +39,6 @@ import pytz
 from random import randrange
 import requests
 from itertools import chain
-from eth_account import Account
 import secrets
 import logging
 import copy
@@ -572,20 +566,24 @@ class dashboardinfo(APIView):
         if len(UserInfo.objects.filter(user = item)) > 0:
                 userinfos = UserInfo.objects.get(user = item)
                 wallet= 0
-                wallets= []
-                price = 0
+                wallets= 0
                 users=[]
+                list = {} 
+                r = requests.get(url = 'https://api.coinex.com/v1/market/ticker/all')
+                list = r.json()['data']['ticker']
+                for itemm in Cp_Wallet.objects.filter(user = request.user):
+                    if itemm.currency.brand == 'USDT':
+                        wallets = wallets + itemm.balance
+                    else:
+                        wallets = wallets + (itemm.balance * float(list[itemm.currency.brand + 'USDT']['last']))
                 if len(Wallet.objects.filter(user = request.user , currency = Currencies.objects.get(id = 1))) > 0:
                     wallet = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 1)).amount
                 userinfos = UserInfo.objects.get(user = request.user)
-                openorder = len(MainTradesBuyOrder.objects.filter(user = request.user)) + len(MainTradesSellOrder.objects.filter(user = request.user)) + len(ProTradesBuyOrder.objects.filter(user = request.user)) + len(ProTradesSellOrder.objects.filter(user = request.user))
-                opens = list(chain(MainTradesBuyOrder.objects.filter(user = request.user), MainTradesSellOrder.objects.filter(user = request.user), ProTradesBuyOrder.objects.filter(user = request.user), ProTradesSellOrder.objects.filter(user = request.user)))
-                openorders = MainTradesSellOrderSerializer(opens , many=True).data
                 unread = 0 
                 for items in Subjects.objects.filter(user = request.user):
                     if not items.read :
                         unread = unread + 1
-                users.append({'username': item.username, 'level': userinfos.level, 'balance': wallet, 'is_active': userinfos.is_active, 'is_admin': userinfos.is_admin, 'id': item.id, 'openorder': openorder, 'unread': unread, 'openorders': openorders, 'wallets': wallets})
+                users.append({'username': item.username, 'level': userinfos.level, 'balance': wallet, 'is_active': userinfos.is_active, 'is_admin': userinfos.is_admin, 'id': item.id, 'unread': unread, 'usbalance': wallets, 'curcount': Cp_Wallet.objects.filter(user = request.user).count()})
         return Response(users)
 
 class user(APIView):
@@ -743,14 +741,14 @@ class wallet(APIView):
             return Response(status=status.HTTP_201_CREATED)
 
         if id == 4 :
-            if len(Wallet.objects.filter(user = request.user , currency = Currencies.objects.get(id = 5))) > 0 :
+            if len(Wallet.objects.filter(user = request.user , currency = Currencies.objects.get(id = 1))) > 0 :
                 if len(Wallet.objects.filter(user = request.user , currency = Currencies.objects.get(id = id))) > 0:
                     wa = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = id))
-                    wa.key = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 5)).key
-                    wa.address = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 5)).address
+                    wa.key = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 1)).key
+                    wa.address = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 1)).address
                     wa.save()
                 else:
-                    wa = Wallet(user = request.user , currency = Currencies.objects.get(id = id) , amount = 0 , address = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 5)).address , key = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 5)).key)
+                    wa = Wallet(user = request.user , currency = Currencies.objects.get(id = id) , amount = 0 , address = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 1)).address , key = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 1)).key)
                     wa.save()
                 return Response(status=status.HTTP_201_CREATED)
             else:
@@ -765,12 +763,12 @@ class wallet(APIView):
                     wa.key = key
                     wa.address = address
                     wa.save()
-                    wa2 = Wallet(user = request.user , currency = Currencies.objects.get(id = 5) , amount = 0 , address = address , key = key)
+                    wa2 = Wallet(user = request.user , currency = Currencies.objects.get(id = 1) , amount = 0 , address = address , key = key)
                     wa2.save()
                 else:
                     wa = Wallet(user = request.user , currency = Currencies.objects.get(id = id) , amount = 0 , address = address , key = key)
                     wa.save()
-                    wa2 = Wallet(user = request.user , currency = Currencies.objects.get(id = 5) , amount = 0 , address = address , key = key)
+                    wa2 = Wallet(user = request.user , currency = Currencies.objects.get(id = 1) , amount = 0 , address = address , key = key)
                     wa2.save()
                 return Response(status=status.HTTP_201_CREATED)
 
@@ -1136,7 +1134,7 @@ class notifications(APIView):
     permission_classes = [IsAuthenticated]
     
     def get_object(self , user):
-        return Notification.objects.filter(user = user)
+        return Notification.objects.filter(user = user).order_by('id')
 
     def get(self , request , format=None):
         if len(self.get_object(request.user)) < 1 :
@@ -1147,12 +1145,16 @@ class notifications(APIView):
 
     def post(self , request , format=None):
         if len(self.get_object(request.user)) < 1 :
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_201_CREATED)
         userinfo =  self.get_object(request.user)
         for item in userinfo :
             item.seen = True
             item.save()
             return Response(status=status.HTTP_201_CREATED)
+
+class unread(APIView):
+    def get(self , request , format=None):
+        return Response(Subjects.objects.filter(user = request.user, read = False).count())
 
 class subject(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
@@ -1877,17 +1879,28 @@ class buy(APIView):
 
 
     def post(self , request, format=None):
+        cur = Cp_Currencies.objects.filter(brand = request.data['currency']).last()
         request.data['user'] = request.user.id
-        serializer = BuySerializer(data = request.data)
-        if serializer.is_valid():
-            wallet = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 1))
-            if wallet.amount < float(request.data['ramount']):
-                return Response({'error':' موجودی کافی نیست . ابتدا حساب ریالی خود را شارژ نمایید'} )
-            wallet.amount = wallet.amount - float(request.data['ramount'])
-            wallet.save()
-            serializer.save()
-            sms(user = User.objects.get(id = 5) ,text= ' درخواست خرید مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'tfpvvl8beg')
-            return Response(serializer.data , status=status.HTTP_201_CREATED)
+        wallet = Wallet.objects.get(user = request.user , currency = Currencies.objects.get(id = 1))
+        if wallet.amount < float(request.data['ramount']):
+            return Response({'error':' موجودی کافی نیست . ابتدا حساب ریالی خود را شارژ نمایید'} )
+
+        wallet.amount = wallet.amount - float(request.data['ramount'])
+        wallet.save()
+
+        if len(Cp_Wallet.objects.filter(user = request.user , currency = cur)):
+            wallet2 = Cp_Wallet.objects.get(user = request.user , currency = cur)
+            wallet2.balance = wallet2.balance + float(request.data['camount'])
+            wallet2.save()
+        else:
+            wallet2 = Cp_Wallet(user = request.user , currency = cur, balance = float(request.data['camount']))
+            wallet2.save()
+        bb = buyrequest(user = request.user , currency = cur,  camount = float(request.data['camount']) , ramount = float(request.data['ramount']), rramount = float(request.data['rramount']) , act = 2)
+        bb.save()
+        note = Notification(user=request.user, title = 'خرید موفق' , text = ' درخواست خرید شما با موفقیت انجام شد . ')
+        note.save()
+        sms(user = User.objects.get(id = 1) ,text= ' خرید مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'tfpvvl8beg')
+        return Response(status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
 
@@ -1906,7 +1919,7 @@ class buyout(APIView):
             wallet.amount = wallet.amount - float(request.data['ramount'])
             wallet.save()
             serializer.save()
-            sms(user = User.objects.get(id = 5)  ,text= ' درخواست خرید ولت خارجی به مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'tfpvvl8beg')
+            sms(user = User.objects.get(id = 1)  ,text= ' درخواست خرید ولت خارجی به مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'tfpvvl8beg')
             return Response(serializer.data , status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
@@ -1971,7 +1984,7 @@ class sellout(APIView):
         serializer = selloutSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
-            sms(user = User.objects.get(id = 5) ,text= ' درخواست فروش ولت خارجی به مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'r4hxan3byx')
+            sms(user = User.objects.get(id = 1) ,text= ' درخواست فروش ولت خارجی به مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'r4hxan3byx')
             return Response(serializer.data , status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
@@ -2017,20 +2030,23 @@ class sell(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self , request, format=None):
+        cur = Cp_Currencies.objects.filter(brand = request.data['currency']).last()
         request.data['user'] = request.user.id
-        coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
-        if not request.data['currency'] in coinex.balance_info():
+        if not len(Cp_Wallet.objects.filter(user = request.user , currency = cur)):
             return Response({'error':'موجودی کافی نیست'} )
-        balance = coinex.balance_info()[request.data['currency']]['available']
+        balance = Cp_Wallet.objects.get(user = request.user , currency = cur).balance
         if float(balance) < float(request.data['camount']):
             return Response({'error':'موجودی کافی نیست'} )
-        coinex.sub_account_transfer(coin_type=request.data['currency'],amount=request.data['camount'])
+        wal1 = Cp_Wallet.objects.get(user = request.user , currency = cur)
+        wal1.balance = wal1.balance - request.data['camount']
+        wal1.save()
         wal = Wallet.objects.get(user = request.user, currency = Currencies.objects.get(id = 1))
         wal.amount = wal.amount + request.data['ramount']
         wal.save()
         serializer = SellSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
+        sms(user = User.objects.get(id = 1) ,text= ' فروش مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'tfpvvl8beg')
         note = Notification(user=request.user, title = 'فروش موفق' , text = ' درخواست فروش شما با موفقیت انجام شد . ')
         note.save()
         return Response(status=status.HTTP_201_CREATED)
@@ -2050,27 +2066,32 @@ class exchange(APIView):
 
 
     def post(self , request, format=None):
+        cur1 = currency = Cp_Currencies.objects.filter(brand = request.data['currency']).last()
+        cur2 = currency = Cp_Currencies.objects.filter(brand = request.data['currency2']).last()
         request.data['user'] = request.user.id
         serializer = ExchangeSerializer(data = request.data)
-        if serializer.is_valid():
-            coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
-            if not request.data['currency'] in coinex.balance_info():
-                return Response({'error':'موجودی کافی نیست'} )
-            balance = coinex.balance_info()[request.data['currency']]['available']
-            if float(balance) < float(request.data['camount']):
-                return Response({'error':'موجودی کافی نیست'} )
-            coinex.sub_account_transfer(coin_type=request.data['currency'],amount=request.data['camount'])
-            note = Notification(user=request.user, title = 'فروش موفق' , text = ' درخواست فروش شما با موفقیت انجام شد . ')
-            note.save()
-            serializer.save()
-            try:
-                sms(user = User.objects.get(id = 5) ,text= ' درخواست تبدیل مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'tfpvvl8beg')
-                sms(user = User.objects.get(id = 1) ,text= ' درخواست تبدیل مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'tfpvvl8beg')
-            except:
-                pass
-            return Response(status=status.HTTP_201_CREATED)
+        if not len(Cp_Wallet.objects.filter(user = request.user , currency = cur1)):
+            return Response({'error':'موجودی کافی نیست'} )
+        balance = Cp_Wallet.objects.get(user = request.user , currency = cur1).balance
+        if float(balance) < float(request.data['camount']):
+            return Response({'error':'موجودی کافی نیست'} )
+        wal1 = Cp_Wallet.objects.get(user = request.user , currency = cur1)
+        wal1.balance = wal1.balance - request.data['camount']
+        wal1.save()
+        if len(Cp_Wallet.objects.filter(user = request.user , currency = cur2)):
+            wallet2 = Cp_Wallet.objects.get(user = request.user , currency = cur2)
+            wallet2.balance = wallet2.balance + float(request.data['camount2'])
+            wallet2.save()
         else:
-            return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+            wallet2 = Cp_Wallet(user = request.user , currency = cur2, balance = float(request.data['camount2']))
+            wallet2.save()
+        note = Notification(user=request.user, title = 'تبدیل موفق' , text = ' درخواست تبدیل شما با موفقیت انجام شد . ')
+        note.save()
+        try:
+            sms(user = User.objects.get(id = 1) ,text= ' درخواست تبدیل مقدار' + str(request.data['camount']) + 'از ارز' + request.data['currency'] + 'برای ' + request.user.username, pattern= 'tfpvvl8beg')
+        except:
+            pass
+        return Response(status=status.HTTP_201_CREATED)
 
 # < ------------   Margin Trades 
 
@@ -2084,7 +2105,8 @@ class oltradeinfo(APIView):
         list = r.json()['data']['ticker']
         list2 = {}
         for item in Leverage.objects.all():
-            list2[item.symbol] = list[item.symbol]
+            if item.symbol in  list:
+                list2[item.symbol] = list[item.symbol]
         return Response(list2)
 
 class oltradeinfo3(APIView):
@@ -2098,6 +2120,11 @@ class oltradeinfo3(APIView):
         list = r.json()['data']['ticker']
         for itemm in list.keys():
             list[itemm]['last'] = float(list[itemm]['last']) / r2 
+            list[itemm]['vol'] = float(list[itemm]['vol']) * float(list[itemm]['buy'])
+            if (float(list[itemm]['buy'])) and (float(list[itemm]['open'])):
+                list[itemm]['change'] = (((float(list[itemm]['buy']) * 100) / float(list[itemm]['open'])) - 100)
+            else:
+                list[itemm]['change'] = 0
         list2 = {}
         for item in Leverage.objects.all():
             if 'USDT' in item.symbol:
@@ -2184,6 +2211,10 @@ class cp_ticker(APIView):
 class cp_address(APIView):
     def post(self , request, format=None):
         coinex = CoinEx('56255CA42286443EB7D3F6DB44633C25', '30C28552C5B3337B5FC0CA16F2C50C4988D47EA67D03C5B7' )
+        if '-' in request.data['sym']:
+            sym = request.data['sym'].split("-")[0]
+            smart = request.data['sym'].split("-")[1]
+            return Response(coinex.balance_deposit_address(coin_type =  sym , smart_contract_name = smart))
         return Response(coinex.balance_deposit_address(coin_type =  request.data['sym']))
 
 class cp_mg_transfer(APIView):
@@ -2239,8 +2270,35 @@ class cp_transfer(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
     permission_classes = [IsAuthenticated]
     def post(self , request):
-        coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
-        return Response(coinex.margin_transfer(from_account=int(request.data['fa']), to_account=int(request.data['ta']), coin_type=request.data['coin'] , amount=str(request.data['amount'])))
+        cur = Cp_Currencies.objects.filter(brand = request.data['coin']).last()
+        if int(request.data['fa']) != 0:
+            coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
+            coinex.margin_transfer(from_account=int(request.data['fa']), to_account=int(request.data['ta']), coin_type=request.data['coin'] , amount=str(request.data['amount']))
+            res = coinex.sub_account_transfer(coin_type=request.data['coin'] , amount=str(request.data['amount']))
+            if len(Cp_Wallet.objects.filter(user = request.user , currency = cur)):
+                wallet2 = Cp_Wallet.objects.get(user = request.user , currency = cur)
+                wallet2.balance = wallet2.balance + float(request.data['amount'])
+                wallet2.save()
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                wallet2 = Cp_Wallet(user = request.user , currency = cur, balance = float(request.data['amount']))
+                wallet2.save()
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(res)
+        else:
+            if len(Cp_Wallet.objects.filter(user = request.user , currency = cur)):
+                wallet = Cp_Wallet.objects.get(user = request.user , currency = cur)
+                if wallet.balance >= float(request.data['amount']):
+                    wallet.balance = wallet.balance - float(request.data['amount'])
+                    wallet.save()
+                    tr = Transfer(user = request.user , coin = cur , amount = float(request.data['amount']) , market = request.data['market'])
+                    tr.save()
+                    return Response(status=status.HTTP_201_CREATED)
+                else:
+                    return Response('موجودی کافی نیست', status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response('موجودی کافی نیست', status=status.HTTP_400_BAD_REQUEST)
+            
 
 class cp_market_order(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication, authentication.TokenAuthentication ]
@@ -2311,10 +2369,10 @@ class cp_mg_main(APIView):
         return Response(coinex.balance_info())
 
     def post(self , request):
-        coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
-        bal = coinex.balance_info()
-        if request.data['sym'] in bal:
-            return Response(bal[request.data['sym']]['available'])
+        
+        if len(Cp_Wallet.objects.filter(currency = Cp_Currencies.objects.filter(brand = request.data['sym']).last())):
+            wal = Cp_Wallet.objects.get(user = request.user,currency = Cp_Currencies.objects.filter(brand = request.data['sym']).last())
+            return Response(wal.balance)
         return Response(0)
 
 class cp_mg_settings(APIView):
@@ -2386,8 +2444,9 @@ class cp_wallets(APIView):
         res = coinex.balance_info()
         result = {}
         for item in Cp_Currencies.objects.all():
-            if item.brand in res.keys() :
-                result[item.brand] = {'name' : item.name ,  'brand' : item.brand,'chain' : item.chain,'can_deposit' : item.can_deposit,'can_withdraw' : item.can_withdraw,'deposit_least_amount' : item.deposit_least_amount,'withdraw_least_amount' : item.withdraw_least_amount,'withdraw_tx_fee' : item.withdraw_tx_fee,'balance':res[item.brand]}
+            if len(Cp_Wallet.objects.filter(currency = item, user= request.user)) :
+                bal = Cp_Wallet.objects.get(currency = item, user= request.user)
+                result[item.brand] = {'name' : item.name ,  'brand' : item.brand,'chain' : item.chain,'can_deposit' : item.can_deposit,'can_withdraw' : item.can_withdraw,'deposit_least_amount' : item.deposit_least_amount,'withdraw_least_amount' : item.withdraw_least_amount,'withdraw_tx_fee' : item.withdraw_tx_fee,'balance':bal.balance}
             else: 
                 result[item.brand] = {'name' : item.name ,  'brand' : item.brand,'chain' : item.chain,'can_deposit' : item.can_deposit,'can_withdraw' : item.can_withdraw,'deposit_least_amount' : item.deposit_least_amount,'withdraw_least_amount' : item.withdraw_least_amount,'withdraw_tx_fee' : item.withdraw_tx_fee,'balance':'0'}
         return Response(result)
@@ -2415,11 +2474,10 @@ class cp_wallet(APIView):
         wallets = {}
         for item in curs:
                 wallets[item.name] = ''
-        coinex = CoinEx(Perpetual.objects.get(user=request.user).apikey, Perpetual.objects.get(user=request.user).secretkey )
-        res = coinex.balance_info()
         result = {}
-        if item.brand in res.keys() :
-            result = {'name' : item.name ,  'brand' : item.brand,'chain' : item.chain,'can_deposit' : item.can_deposit,'can_withdraw' : item.can_withdraw,'deposit_least_amount' : item.deposit_least_amount,'withdraw_least_amount' : item.withdraw_least_amount,'withdraw_tx_fee' : item.withdraw_tx_fee,'balance':res[item.brand],'address' : wallets}
+        if len(Cp_Wallet.objects.filter(user = request.user , currency = Cp_Currencies.objects.filter(brand = brand).last())) :
+            wal = Cp_Wallet.objects.get(user = request.user , currency = Cp_Currencies.objects.filter(brand = brand).last())
+            result = {'name' : item.name ,  'brand' : item.brand,'chain' : item.chain,'can_deposit' : item.can_deposit,'can_withdraw' : item.can_withdraw,'deposit_least_amount' : item.deposit_least_amount,'withdraw_least_amount' : item.withdraw_least_amount,'withdraw_tx_fee' : item.withdraw_tx_fee,'balance':wal.balance,'address' : wallets}
         else: 
             result = {'name' : item.name ,  'brand' : item.brand,'chain' : item.chain,'can_deposit' : item.can_deposit,'can_withdraw' : item.can_withdraw,'deposit_least_amount' : item.deposit_least_amount,'withdraw_least_amount' : item.withdraw_least_amount,'withdraw_tx_fee' : item.withdraw_tx_fee,'balance':'0','address' : wallets}
         return Response(result)
